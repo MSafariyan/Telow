@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "telow",
+            "database": "${workspaceFolder:telow}/telow/db.sqlite3"
+        }
+    ]
+}

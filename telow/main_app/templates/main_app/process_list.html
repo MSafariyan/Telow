@@ -1,0 +1,59 @@
+{% extends "dashboard/base.html" %}
+{% block content%} 
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">لیست روندها</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <a href='{% url "process-add" %}' class="btn btn-lg btn-outline-success">اضافه کردن</a>
+        <a href='{% url "panel" %}' class="btn btn-lg btn-outline-secondary">داشبورد</a>
+      </div>
+    </div>
+</div>
+    <!-- Iterate over object_list -->
+    <div class="d-flex justify-content-md-between">
+
+        <table class="table text-center table-striped table-bordered " dir="rtl">
+            <thead class="thead-dark"> 
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">نام وضعیت</th>
+                <th scope="col">توضیحات</th>
+                <th scope="col">وضعیت</th>
+                <th scope="col">امکانات</th>
+            </tr>
+            </thead>
+            <tbody class="table-striped ">
+        {% for object in object_list %}
+        
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ object.process_name }}</td>
+                <td>{{ object.process_description }}</td>
+                <td>{% if object.isEnable == True %} <span class="text-success btn btn-outline-success">فعال</span> {% else %} <span class="text-danger btn btn-outline-danger">غیرفعال</span> {% endif %}</td>
+                <td>
+                    <a href='{% url "process-delete" object.pk %}' class="btn btn-danger">حدف</a>
+                    <a href='{% url "process-update" object.pk %}' class="btn btn-primary">اصلاح</a>
+                    <a href='{% url "process-detail" object.pk %}' class="btn btn-secondary">جزئیات</a>
+
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </div>
+{% endblock %} 
+
+<ul>
+    <!-- Iterate over object_list -->
+    {% for object in object_list %}
+    <!-- Display Objects -->
+    <p>{{ object.pk }}</p>
+    <li>{{ object.name }}</li>
+    <li>{{ object.description }}</li>
+ 
+    <hr/>
+    <!-- If object_list is empty  -->
+    {% empty %}
+    <li>No objects yet.</li>
+    {% endfor %}
+</ul>

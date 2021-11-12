@@ -1,0 +1,16 @@
+{% extends "dashboard/base.html"%}
+
+{% block content %}
+<div class="col-md-6 offset-md-3 text-center">
+<div class="mt-5" dir="rtl">
+    <form method="post" class="border border-danger rounded p-5 m-5 ">
+        {% csrf_token %}
+        <p class="h3">آیا از حذف آیتم " {{ object }} " اطمینان دارید؟</p>
+        <div class="row">
+            <a href="{% url 'action-list' %}" class="btn btn-primary btn-block">خیر</a>
+            <input type="submit" value="بله" class="btn btn-danger btn-block">
+        </div>
+    </form>
+   </div>
+</div>
+{% endblock %}

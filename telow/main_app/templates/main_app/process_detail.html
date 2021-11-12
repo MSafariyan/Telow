@@ -1,0 +1,68 @@
+{% extends "dashboard/base.html"%}
+
+{% block content %}
+<div class="row justify-content-md-center">
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">لیست روندها</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <a href='{% url "process-update" process.pk%}' class="btn btn-lg btn-outline-success">اصلاح</a>
+        <a href='{% url "panel" %}' class="btn btn-lg btn-outline-secondary">داشبورد</a>
+      </div>
+    </div>
+</div>
+<div class="mt-5">
+    <div class="card mb-5 bq-primary shadow shadow-md mt-5 text-center" dir="rtl">
+        <div class="card-header h2 text-center card-title"> روند "{{process.process_name}}"</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6" dir="rtl">
+                    <p class="card-text"><span class="h5 text-secondary">توضیحات سفارش: </span><span
+                        class="h6">{{process.process_description}}</span></p>
+                    
+                </div>
+                <div class="col-md-6" dir="rtl">
+                    <p class="h5"><span class="h5 text-secondary">اخرین به روزرسانی روند:
+                    </span><span>{{process.updated_at|date:"m/d/Y"}}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table  rounded shadow text-center table-striped" dir="rtl">
+        <thead class="thead">
+            <p class="text-center h3">وظایف مرتبط با این روند</p>
+            <tr>
+                <th scope="col">ردیف</th>
+                <th scope="col">وظیفه جاری</th>
+                <th scope="col">وضعیت وظیفه جاری</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if process_action|length >= 1 %}
+            {% for action in process_action %}
+            <tr style="border-right: 3px solid blue;" class="rounded">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{action.action}}</td>
+                <td>{{action.action.description}}</td>
+            </tr>
+            {% endfor%}
+            {% elif actions|length == 1 %}
+            <tr style="border-right: 3px solid blue;" class="rounded">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{action.process_action}}</td>
+                <td><span class="border " style="background-color: '#{{action.status.color}}';">{{action.status}}</span>
+                </td>
+                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a>
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+{% endblock %}
+
+{% block js%}
+{{block.super}}
+{% endblock %}

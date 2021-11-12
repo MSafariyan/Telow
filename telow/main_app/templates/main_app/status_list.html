@@ -1,0 +1,40 @@
+{% extends "dashboard/base.html" %}
+{% block content%} 
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">لیست وضعیت‌ها</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <a href='{% url "status-add" %}' class="btn btn-lg btn-outline-success">اضافه کردن</a>
+        <a href='{% url "panel" %}' class="btn btn-lg btn-outline-secondary">داشبورد</a>
+      </div>
+    </div>
+  </div>
+    <!-- Iterate over object_list -->
+    <div class="d-flex justify-content-md-between">
+
+        <table class="table text-center table-striped table-bordered" dir="rtl">
+            <thead class="thead-dark"> 
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">نام وضعیت</th>
+                <th scope="col">امکانات</th>
+                <th scope="col">اخرین بروزرسانی</th>
+            </tr>
+            </thead>
+            <tbody class="table-striped">
+        {% for object in object_list %}
+        
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ object.status_title }}</td>
+                <td>
+                    <a href='{% url "status-delete" object.pk %}' class="btn btn-danger">حدف</a>
+                    <a href='{% url "status-update" object.pk %}' class="btn btn-primary">اصلاح</a>
+                </td>
+                <td>{{ object.updated_at }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </div>
+{% endblock %} 

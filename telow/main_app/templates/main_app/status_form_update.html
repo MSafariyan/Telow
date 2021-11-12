@@ -1,0 +1,15 @@
+{% extends "dashboard/base.html"%}
+
+{% block content %}
+<div class="col-md-8 offset-md-2">
+    <div class="mt-5" dir="rtl">
+        <h2 class="text-center">ایجاد تغییر</h2>
+        <form method="POST" enctype="multipart/form-data" class="border p-5 rounded border-primary " action="{% url 'status-update' obj.pk %}">
+            <!-- Security token -->
+            {% csrf_token %}
+            {{form}}
+            <input type="submit" value="ثبت" class="btn btn-success btn-block mt-4">
+        </form>
+    </div>
+</div>
+{% endblock %}

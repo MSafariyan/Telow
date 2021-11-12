@@ -1,0 +1,927 @@
+{% extends "dashboard/base.html"%}
+{% load static %}
+
+{% block head %}
+{{ block.super }}
+
+<link href="{% static 'main_app/select2/css/select2.min.css' %}" rel="stylesheet" />
+<script src="{% static 'main_app/select2/js/select2.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
+<script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
+<!-- <style>
+    .card {
+        margin-top: 20px;
+    }
+
+    hr {
+        background-color: whitesmoke;
+        border: 1px solid rgb(255, 234, 195)
+    }
+
+    input:focus {
+        background-color: rgba(255, 166, 0, 0.329) !important;
+    }
+
+    input::-ms-fill {
+        background-color: rgba(255, 166, 0, 0.329) !important;
+    }
+
+    input::placeholder {
+        color: rgb(146, 96, 4) !important;
+    }
+
+    input:valid {
+        background-color: rgba(0, 128, 0, 0.418);
+        color: blackz2;
+    }
+
+    .select2-container[dir="rtl"] .select2-selection--single .select2-selection__rendered {
+        padding-top: 5px;
+    }
+
+    .select2-selection__arrow {
+        top: 5px !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        height: calc(1.5em + .75rem + 5px);
+    }
+
+    .select2-search__field {
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+    }
+
+    .select2-search__field:focus {
+        border: 1px solid red !important;
+        border-radius: .25rem;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 .25rem .25rem 0 !important
+    }
+
+    .input-group .input-group-text {
+        border-radius: .25rem 0 0 .25rem !important
+    }
+</style> -->
+{% endblock %}
+
+{% block content %}
+{% if message %}
+<div class="row">
+    <div class="col-md-12">
+        <div class=" alert alert-{{status}} alert-dismissible fade show mt-4" role="alert" dir="rtl">
+            {{message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+    <div class="container-fluid" dir="rtl">
+        <div class="row justify-content-md-center mt-5 p-5 ">
+            <div class="col-md-10 text-center">
+                <h2>order</h2>
+
+                <form action="{% url 'order-creat' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren" aria-label="Show">عمومی</h5>
+                        <div class="card-body">
+                            {{form.priority}}
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="{{form.title.id_form_label}}">عنوان:</label>
+                                    {{form.title}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.assignE.id_for_label}}">مشتری:</label>
+                                    {{form.assignE}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.flow.id_for_label}}">روند:</label>
+                                    {{form.flow}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.order_number.id_for_label}}">شماره سفارش:</label>
+                                    {{form.order_number}}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mt-4">
+                                <div class="col-md-3">
+                                    <label for="{{form.delivery_date.id_for_label}}">تاریخ تحویل به مشتری:</label>
+                                    {{form.delivery_date}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.payment_type.id_for_label}}">شیوه تسویه:</label>
+                                    {{form.payment_type}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.outsource.id_for_label}}">برون‌سپاری:</label>
+                                    <div id="{{form.outsource.id_for_label}}" class=" text-center border p-2 rounded">
+                                        {% for radio in form.outsource %}
+                                        <span class="p-3">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.outsource_action.id_for_label}}">عملیات برون سپاری:</label>
+                                    {{form.outsource_action}}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <label for="{{form.final_circulation.id_for_label}}">تیراژ نهایی:</label>
+                                    {{form.final_circulation}}
+                                    <div class="mt-2 ">
+                                        {% for radio in form.final_circulation_type %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.layers.id_for_label}}">تعداد لایه ها</label>
+                                    {{form.layers}}
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.layer_circulation.id_for_label}}">تیراژ لایه ها</label>
+                                    {{form.layer_circulation}}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">کاغذ/مقوا</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-4 p-3">
+                                    <label for="{{form.paper_supplier.id_for_label}}">تامین کننده کاغذ:
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.paper_supplier %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="{{form.paper_type.id_for_label}}">نوع کاغذ:</label>
+                                    {{form.paper_type}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.paper_weigth.id_for_label}}">گرماژ:</label>
+                                    {{form.paper_weigth}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.paper_brand.id_for_label}}">برند:</label>
+                                    {{form.paper_brand}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.paper_supplier.id_for_label}}">SG v LG
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.unknowOption %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="{{form.paper_amount.id_for_label}}">تعداد کل کاغذ/مقوا:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">شیت</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.paper_waste_amount.id_for_label}}">تعداد کاغذ/مقوا باطله:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_waste_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">شیت</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.paper_used_amount.id_for_label}}">تعداد کاغذ/مقوا مفید:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_used_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">شیت</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="{{form.paper_legit_size.id_for_label}}">اندازه اولیه کاغذ/مقوا:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_legit_size}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">سانتی متر</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.papaer_self_provide.id_for_label}}">تعداد قابل تامین توسط شرکت:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.papaer_self_provide}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">شیت</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.paper_customer_provide.id_for_label}}">تعداد قابل تامین از انبار امانی مشتری:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_customer_provide}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">شیت</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">لیتوگرافی</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="{{form.print_plate_amount.id_for_label}}">تعداد زینک</label>
+                                    <div class="input-group mb-3">
+                                        {{form.print_plate_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">برگ</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mt-4">
+                                    <div class="text-center mt-1 border rounded">
+                                        <label for="{{form.print_plate_burn.id_for_label}}" class="pt-2">زینک سوزی:</label>
+                                        {{form.print_plate_burn}}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.paper_work_size.id_for_label}}">ابعاد کار</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_work_size}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">سانتی متر</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.print_plate_provider.id_for_label}}">تامین کننده زینک:
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.print_plate_provider %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="{{form.ordering_on_print_plate.id_for_label}}">تعداد چیدمان در هر زینک:</label>
+                                    {{form.ordering_on_print_plate}}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{form.print_plate_file.id_for_label}}" >آدرس فایل گرافیکی</label>
+                                    {{form.print_plate_file}}     
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">برش قبل از چاپ</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="{{form.paper_size_before_cut.id_for_label}}">ابعاد اولیه کاغذ:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_size_before_cut}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">سانتی متر</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{form.paper_amount_recived.id_for_label}}">تعداد کل کاغذ دریافتی از انبار:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_amount_recived}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">شیت</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{form.paper_work_size_after_cut.id_for_label}}">ابعاد کاغذ پس از برش</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_work_size_after_cut}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">سانتی متر</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{form.paper_amount_after_cut.id_for_label}}">تعداد کاغذ بعد از برش</label>
+                                    <div class="input-group mb-3">
+                                        {{form.paper_amount_after_cut}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">شیت</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="text-center mt-1 border rounded">
+                                        <label for="{{form.return_wasted_paper.id_for_label}}" class="pt-2">کناره کاغذ/مقوا تحویل مشتری گردد:</label>
+                                        {{form.return_wasted_paper}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                        {{form.lito_discription}}                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">چاپ</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-6 mt-1">
+                                    <div class="text-center mt-4 border rounded">
+                                        <label for="{{form.qc.id_for_label}}" class="pt-2">تصدیق چاپ توسط QC:</label>
+                                        {{form.qc}}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.superviser.id_for_label}}">ناظر:
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.superviser %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.sample_view.id_for_label}}">نمونه شاهد:
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.sample_view %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="{{form.color_pallet_range.id_for_label}}" >تعداد رنگ:</label>
+                                    {{form.color_pallet_range}}      
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.color_pallet.id_for_label}}">انتخاب رنگ‌ها
+                                    </label>
+                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                        {% for radio in form.color_pallet %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.spot_colors.id_for_label}}" >رنگ‌های Spot:</label>
+                                    {{form.spot_colors}}      
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.pantone_colors.id_for_label}}" >رنگ‌های Pantones:</label>
+                                    {{form.pantone_colors}}      
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">   
+                                <div class="col">
+                                    <label for="{{form.parallel_cover.id_for_label}}">انتخاب رنگ‌ها
+                                    </label>
+                                    <div class="text-center border p-2 rounded" dir="">
+                                        {% for radio in form.parallel_cover %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>   
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="{{form.print_option.id_for_label}}">نحوه چاپ
+                                    </label>
+                                    <div class="text-center border p-2 rounded" dir="">
+                                            {% for radio in form.print_option %}
+                                                <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                            {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-4">
+                                    <label for="{{form.print_machines_count.id_for_label}}" >تعداد دستگاه‌ها:</label>
+                                    {{form.print_machines_count}} 
+                                </div>
+                                <div class="col-md-4 mt-4">
+                                    <label for="{{form.forms_count.id_for_label}}" >تعداد فرم:</label>
+                                    {{form.forms_count}} 
+                                </div>
+                                <div class="col-md-4 mt-4">
+                                    <label for="{{form.print_graphhical_file.id_for_label}}" >پیوست فایل گرافیکی:</label>
+                                    {{form.print_graphhical_file}} 
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="{{form.print_discription.id_for_label}}" ></label>
+                                    {{form.print_discription}}     
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">پوشش تخت</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="{{form.flat_cover.id_for_label}}">نوع پوشش تخت:
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.flat_cover %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4 offset-md-4 mt-4">
+                                    <label for="{{form.flat_cover_detail.id_for_label}}">محل خالی کردن:
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.flat_cover_detail %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-4">
+                                    <label for="{{form.flat_cover_file.id_for_label}}">فایل پیوست پوشش
+                                    </label>
+                                    {{form.flat_cover_file}}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="{{form.print_discription.id_for_label}}" ></label>
+                                    {{form.print_discription}}     
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">سلفون</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="{{form.plastic_covers.id_for_label}}">گزینه های سلفون
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.plastic_covers %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="{{form.plastic_discription.id_for_label}}"></label>
+                                    {{form.plastic_discription}}
+                                </div>
+                            </div>                
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">پوشش موضعی</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="{{form.part_cover.id_for_label}}">پوشش موضعی
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.part_cover %}
+                                        <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>     
+                                <div class="col-md-6">
+                                    <label for="{{form.flat_cover_file.id_for_label}}">پیوست فایل پوشش موضعی</label>
+                                    {{form.flat_cover_file}}
+                                </div>    
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col">
+                                    {{form.part_cover_description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">هات استمپ</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-6 mt-1">
+                                    <label for="{{form.hotstamp_sample.id_for_label}}">نمونه هات استمپ:
+                                    </label>
+                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                        {% for radio in form.hotstamp_sample %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.hotstamp_foil_color.id_for_label}}">رنگ فویل:
+                                    </label>
+                                    {{form.hotstamp_foil_color}}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.hotstamp_file.id_for_label}}">پیوست فایل هات استمپ
+                                    </label>
+                                    {{form.hotstamp_file}}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">   
+                                <div class="col-md-3">
+                                    <label for="{{form.cliche_type.id_for_label}}">نوع کلیشه:
+                                    </label>
+                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                        {% for radio in form.cliche_type %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="{{form.cliche_provider.id_for_label}}">کلیشه
+                                    </label>
+                                    <div class="text-right border p-2 rounded" dir="">
+                                        {% for radio in form.cliche_provider %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>   
+                            </div>
+                            <hr>                        
+                            <div class="row">
+                                <div class="col">
+                                    <label for="{{form.print_discription.id_for_label}}" ></label>
+                                    {{form.print_discription}}     
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">پوشال</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-12 mt-1">
+                                    <label for="{{form.sheild.id_for_label}}">پوشال گیری:
+                                    </label>
+                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                        {% for radio in form.sheild %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">پنجره چسبانی</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="{{form.window_sticking.id_for_label}}">پنجره چسبانی</label>
+                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                        {% for radio in form.window_sticking %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.window_width.id_for_label}}">عرض نایلون/طلق:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.window_width}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">سانتی متر</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.window_width.id_for_label}}">ضخامت نایلون/طلق:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.window_width}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">میکرون</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">جعبه چسبانی</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="{{form.box_sticking.id_for_label}}">جعبه چسبانی
+                                    </label>
+                                    <div class="text-right border p-2rounded" dir="">
+                                        {% for radio in form.box_sticking %}
+                                        <span class="m-2">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">صحافی</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="{{form.bindray_cut.id_for_label}}">برش
+                                    </label>
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.bindray_cut %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{form.bindray_size.id_for_label}}">ابعاد نهایی برش:</label>
+                                    <div class="input-group mb-3">
+                                        {{form.bindray_size}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">سانتی متر</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label for="{{form.bindray_detail.id_for_label}}"></label>
+                                <div class="text-center border p-2 rounded">
+                                    {% for radio in form.bindray_detail %}
+                                    <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">   
+                                <div class="text-right border p-2 rounded" >
+                                    {% for radio in form.bindary_cover %}
+                                    <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <hr>                        
+                            <div class="row">
+                                <div class="col">
+                                    <div class="text-right border p-2 rounded" >
+                                        {% for radio in form.bindary_cover2 %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>   
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="text-center border p-2 rounded" >
+                                        <label for="{{form.bindray_serial.id_for_label}}">شماره سریال</label>
+                                        {{form.bindray_serial}}
+                                    </div>  
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>
+                            <div class="row mt-4">
+                                    <span class="mt-2">شماره سریال:</span>
+                                <div class="col-md-3">
+                                    {{form.bindray_serial_number_start}}
+                                </div>
+                                <span class="mt-2 h5">تا</span>
+                                <div class="col-md-3">
+                                    {{form.bindray_serial_number_end}}
+                                </div>
+                                <span class="mt-2">ترتیب نسخه ها:</span>
+                                <div class="col-md-3">
+                                    {{form.bindary_order}}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col">
+                                    {{form.bindary_description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">شخصی سازی</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="text-center border p-2 rounded">
+                                        {% for radio in form.customize %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <span class="mt-2 mr-4">نحوه تحویل پین/سریال/کد:</span>
+                                <div class="col-md-4">
+                                    {{form.bindary_order}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-right">
+                        <h5 class="card-header bg-dark text-light hideChildren">بسته بندی</h5>
+                        <div class="card-body hideChildren">
+                            <div class="row">
+                                <div class="col-md-12 mt-1">
+                                    <label for="{{form.send_type.id_for_label}}">نحوه ارسال به مشتری:</label>
+                                    <div class="text-center border p-2 rounded" >
+                                        {% for radio in form.send_type %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">   
+                                <div class="col-md-4">
+                                    <label for="{{form.shiring_amount.id_for_label}}">تعداد شرینگ</label>
+                                    <div class="input-group mb-3">
+                                        {{form.shiring_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">عدد</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.lafaf_amount.id_for_label}}">تعداد لفاف</label>
+                                    <div class="input-group mb-3">
+                                        {{form.lafaf_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">عدد</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.bandinak_amount.id_for_label}}">تعداد بندینک</label>
+                                    <div class="input-group mb-3">
+                                        {{form.bandinak_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">عدد</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>                        
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="{{form.packing_type.id_for_label}}">نوع کارتن:
+                                    </label>
+                                    <div class="text-right border p-2 rounded" dir="">
+                                        {% for radio in form.packing_type %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="mt-2">
+                                        {{form.packing_description}}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.box_amount.id_for_label}}">تعداد در کارتن</label>
+                                    <div class="input-group mb-3">
+                                        {{form.box_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">عدد</span>
+                                        </div>
+                                    </div>
+                                    <label for="{{form.packing_provider.id_for_label}}">تامین کننده کارتن
+                                    </label>
+                                    <div class="text-right border p-2 rounded" dir="">
+                                        {% for radio in form.packing_provider %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>   
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="text-right m-4">سبد {{form.basket}}  نایلون{{form.plastic}}</div>
+                                    <div class="mt-2">
+                                        {{form.basket_description}}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{form.basket_amount.id_for_label}}">تعداد در سبد</label>
+                                    <div class="input-group mb-3">
+                                        {{form.basket_amount}}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">عدد</span>
+                                        </div>
+                                    </div>
+                                    <label for="{{form.basket_provider.id_for_label}}">تامین کننده سبد
+                                    </label>
+                                    <div class="text-right border p-2 rounded" dir="">
+                                        {% for radio in form.basket_provider %}
+                                        <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>   
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <label for="{{form.basket_type.id_for_label}}">حمل و نقل:
+                                </label>
+                                <div class="text-right border p-2 rounded" dir="">
+                                    {% for radio in form.basket_type %}
+                                    <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <label for="{{form.label_type.id_for_label}}">لیبل‌ها
+                                </label>
+                                <div class="text-right border p-2 rounded" dir="">
+                                    {% for radio in form.label_type %}
+                                    <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="{{form.label_detail.id_for_label}}">موارد مندرج در لیبل اختصاصی:</label>
+                                    {{form.label_detail}}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                {{form.other_description}}
+                            </div>
+                        </div>
+                    </div> -->
+                <input type="submit" value="ثبت" class="btn btn-success btn-block mt-4">
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $('.js-example-basic-single').select2();
+    });
+
+    $(document).ready(function () {
+        $('.js-example-basic-multiple').select2();
+    });
+
+
+    $('.hideChildren').next().hide()
+    $('.hideChildren').click(function() {
+        console.log('hide');
+        $(this).next().slideToggle(400)
+    });
+</script>
+
+<script>
+$('.jalali_date-date').addClass('form-control')
+
+</script>
+{% endblock%}

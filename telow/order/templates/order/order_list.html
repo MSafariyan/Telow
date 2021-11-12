@@ -1,0 +1,38 @@
+{% extends "dashboard/base.html" %}
+{% block content%} 
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="display-6">لیست سفارشات</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <a href='{% url "order-creat" %}' class="btn btn-lg btn-outline-success">سفارش جدید</a>
+        <a href='{% url "panel" %}' class="btn btn-lg btn-outline-primary">داشبورد</a>
+      </div>
+    </div>
+  </div>
+    <!-- Iterate over object_list -->
+    <div class="d-flex justify-content-md-between">
+
+        <table class="table text-center table-striped table-bordered" dir="rtl">
+            <thead class="thead-dark"> 
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">نام سفارش</th>
+                <th scope="col">امکانات</th>
+                <th scope="col">تاریخ ثبت سفارش</th>
+            </tr>
+            </thead>
+            <tbody class="table-striped">
+        {% for data in orders %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ data.order.order_title }}</td>
+                <td>
+                    <a href='{% url "order-detail" data.order.pk %}' class="btn btn-secondary">جزئیات</a>
+                </td>
+                <td>{{ data.order.created_at }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </div>
+{% endblock %} 

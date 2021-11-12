@@ -1,0 +1,694 @@
+{% extends "dashboard/base.html"%}
+{% load static %}
+{% load jalali_tags %}
+{% load tags %}  
+{% block head %}
+{{block.super}}
+<link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
+<script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
+<style>
+    label {
+        font-size: 16.5px;
+        color:gray;
+    }
+    .card-body {
+        text-align: right;
+    }
+</style>
+{% endblock%}
+{% block content %}
+<div class="mt-5" dir="rtl">
+    <div class="row">
+        <div class="col-md-3 pr-5"><span class="h3 p-3">{{order.pk}}</span><span class="h5">:شماره سفارش</span></div>
+        <div class="col-md-6">
+            <h1 class="text-center">جزئیات سفارش و درخواست مشتری</h1>
+        </div>
+        <div class="col-md-3">
+            <p class="h6 pr-5"><span>تاریخ سفارش: </span><span>{{order.created_at|to_jalali:'%Y/%m/%d'}}</span></p>
+        </div>
+    </div>
+    <div class="card mb-5 bq-primary shadow shadow-md mt-5 text-center">
+        <div class="card-header h2 text-center card-title">مشخصات سفارش</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6" dir="rtl">
+                    <p class="card-text"><span class="h5 text-secondary">عنوان سفارش: </span><span
+                            class="h6">{{order.order_title}}</span></p>
+                </div>
+                <div class="col-md-6" dir="rtl">
+                    <p class="card-text"><span class="h5 text-secondary text-right">نام مشتری: </span><span
+                            class="h6">{{order.customer_id}}</span></p>
+                    <p class="card-text"><span class="h5 text-secondary">اولویت سفارش: </span><span
+                            class="h6">{{order.priority}}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-5 bq-primary shadow shadow-md mt-5 text-center">
+        <div class="h5 mt-2 text-center card-title">جزئیات سفارش</div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren" aria-label="Show">عمومی</h5>
+            <div class="card-body">
+                <div class="row" dir="rtl">
+                    <div class="col-md-3">
+                        <label for="{{form.title.id_form_label}}">عنوان:</label>
+                        {{meta.meta_value.title}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.assignE.id_for_label}}">مشتری:</label>
+                        {{form.assignE}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.flow.id_for_label}}">روند:</label>
+                        {{form.flow}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.order_number.id_for_label}}">شماره سفارش:</label>
+                        {{meta.meta_value.order_number}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <label for="{{form.delivery_date.id_for_label}}">تاریخ تحویل به مشتری:</label>
+                        {% with date=meta.meta_value.delivery_date|convert_str_date %}
+                        {{date|to_jalali:'%Y/%m/%d'}}
+                        {% endwith %}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.payment_type.id_for_label}}">شیوه تسویه:</label>
+                        {{meta.meta_value.payment_type}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.outsource.id_for_label}}">برون‌سپاری:</label>
+                        {% if meta.meta_value.outsource == "True" %}
+                        دارد
+                        {% else %}
+                        ----
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.outsource_action.id_for_label}}">عملیات برون سپاری:</label>
+                        {% if meta.meta_value.outsource == "True" %}
+                        {{meta.meta_value.outsource_action}}
+                        {% else %}
+                        ----
+                        {% endif %}
+                    </div>
+                </div>
+                <hr>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <label for="{{form.final_circulation.id_for_label}}">تیراژ نهایی:</label>
+                        {{meta.meta_value.final_circulation}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.layers.id_for_label}}">تعداد لایه ها:</label>
+                        {{meta.meta_value.layers}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.layer_circulation.id_for_label}}">تیراژ لایه ها:</label>
+                        {{meta.meta_value.layer_circulation}}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">کاغذ/مقوا</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-4 p-3">
+                        <label for="{{form.paper_supplier.id_for_label}}">تامین کننده کاغذ:
+                        </label>
+                        {{meta.meta_value.paper_supplier}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="{{form.paper_type.id_for_label}}">نوع کاغذ:</label>
+                        {{meta.meta_value.paper_type}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.paper_weigth.id_for_label}}">گرماژ:</label>
+                        {{meta.meta_value.paper_weigth}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.paper_brand.id_for_label}}">برند:</label>
+                        {{meta.meta_value.paper_brand}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.paper_supplier.id_for_label}}">SG v LG:
+                        </label>
+                        {{meta.meta_value.unknowOption}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="{{form.paper_amount.id_for_label}}">تعداد کل کاغذ/مقوا:</label>
+                        {{meta.meta_value.paper_amount}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.paper_waste_amount.id_for_label}}">تعداد کاغذ/مقوا باطله:</label>
+                        {{meta.meta_value.paper_waste_amount}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.paper_used_amount.id_for_label}}">تعداد کاغذ/مقوا مفید:</label>
+                        {{meta.meta_value.paper_used_amount}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="{{form.paper_legit_size.id_for_label}}">اندازه اولیه کاغذ/مقوا:</label>
+                        {{meta.meta_value.paper_legit_size}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.papaer_self_provide.id_for_label}}">تعداد قابل تامین توسط شرکت:</label>
+                        {{meta.meta_value.papaer_self_provide}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.paper_customer_provide.id_for_label}}">تعداد قابل تامین از انبار امانی مشتری:</label>
+                        {{meta.meta_value.paper_customer_provide}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">لیتوگرافی</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="{{form.print_plate_amount.id_for_label}}">تعداد زینک:</label>
+                        {{meta.meta_value.print_plate_amount}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.print_plate_burn.id_for_label}}">زینک سوزی:</label>
+                            {{meta.meta_value.print_plate_burn}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.paper_work_size.id_for_label}}">ابعاد کار:</label>
+                        {{meta.meta_value.paper_work_size}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.print_plate_provider.id_for_label}}">تامین کننده زینک:
+                        </label>
+                        {{meta.meta_value.print_plate_provider}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="{{form.ordering_on_print_plate.id_for_label}}">تعداد چیدمان در هر زینک:</label>
+                        {{meta.meta_value.ordering_on_print_plate}}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{form.print_plate_file.id_for_label}}" >آدرس فایل گرافیکی:</label>
+                        {{meta.meta_value.print_plate_file}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">برش قبل از چاپ</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="{{form.paper_size_before_cut.id_for_label}}">ابعاد اولیه کاغذ:</label>
+                        {{meta.meta_value.paper_size_before_cut}}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{form.paper_amount_recived.id_for_label}}">تعداد کل کاغذ دریافتی از انبار:</label>
+                        {{meta.meta_value.paper_amount_recived}}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{form.paper_work_size_after_cut.id_for_label}}">ابعاد کاغذ پس از برش</label>
+                        {{meta.meta_value.paper_work_size_after_cut}}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{form.paper_amount_after_cut.id_for_label}}">تعداد کاغذ بعد از برش</label>
+                        {{meta.meta_value.paper_amount_after_cut}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="{{form.return_wasted_paper.id_for_label}}">کناره کاغذ/مقوا تحویل مشتری گردد:</label>
+                            {{meta.meta_value.return_wasted_paper}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">چاپ</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="{{form.qc.id_for_label}}">تصدیق چاپ توسط QC:</label>
+                            {{meta.meta_value.qc}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.superviser.id_for_label}}">ناظر:
+                        </label>
+                        {{meta.meta_value.superviser}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.sample_view.id_for_label}}">نمونه شاهد:
+                        </label>
+                        {{meta.meta_value.sample_view}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="{{form.color_pallet_range.id_for_label}}" >تعداد رنگ:</label>
+                        {{meta.meta_value.color_pallet_range}}      
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.color_pallet.id_for_label}}">انتخاب رنگ‌ها:
+                        </label>
+                        {{meta.meta_value.color_pallet}}      
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.spot_colors.id_for_label}}" >رنگ‌های Spot:</label>
+                        {{meta.meta_value.spot_colors}}      
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.pantone_colors.id_for_label}}" >رنگ‌های Pantones:</label>
+                        {{meta.meta_value.pantone_colors}}      
+                    </div>
+                </div>
+                <hr>
+                <div class="row">   
+                    <div class="col">
+                        <label for="{{form.parallel_cover.id_for_label}}">انتخاب رنگ‌ها:
+                        </label>
+                        {{meta.meta_value.parallel_cover}}      
+                    </div>   
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="{{form.print_option.id_for_label}}">نحوه چاپ:
+                        </label>
+                        {{meta.meta_value.print_option}}      
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.print_machines_count.id_for_label}}" >تعداد دستگاه‌ها:</label>
+                        {{meta.meta_value.print_machines_count}} 
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.forms_count.id_for_label}}" >تعداد فرم:</label>
+                        {{meta.meta_value.forms_count}} 
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.print_graphhical_file.id_for_label}}" >پیوست فایل گرافیکی:</label>
+                        {{meta.meta_value.print_graphhical_file}} 
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        <label for="{{form.print_discription.id_for_label}}" ></label>
+                        {{meta.meta_value.print_discription}}     
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">پوشش تخت</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="{{form.flat_cover.id_for_label}}">نوع پوشش تخت:
+                        </label>
+                        {{meta.meta_value.flat_cover}}  
+                    </div>
+                    <div class="col-md-4 offset-md-4 mt-4">
+                        <label for="{{form.flat_cover_detail.id_for_label}}">محل خالی کردن:
+                        </label>
+                        {{meta.meta_value.flat_cover_detail}}  
+                    </div>
+                    <div class="col-md-4 mt-4">
+                        <label for="{{form.flat_cover_file.id_for_label}}">فایل پیوست پوشش
+                        </label>
+                        {{meta.meta_value.flat_cover_file}}  
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        <label for="{{form.print_discription.id_for_label}}" >توضیحات:</label>
+                        {{meta.meta_value.print_discription}}     
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">سلفون</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="{{form.plastic_covers.id_for_label}}">گزینه های سلفون
+                        </label>
+                        {{meta.meta_value.plastic_covers}}
+                    </div>
+                    <div class="col-md-12">
+                        <label for="{{form.plastic_discription.id_for_label}}">توضیحات:</label>
+                        {{meta.meta_value.plastic_discription}}
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">پوشش موضعی</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="{{form.part_cover.id_for_label}}">پوشش موضعی
+                        </label>
+                        {{meta.meta_value.part_cover}}
+                    </div>     
+                    <div class="col-md-6">
+                        <label for="{{form.flat_cover_file.id_for_label}}">پیوست فایل پوشش موضعی</label>
+                        {{meta.meta_value.flat_cover_file}}
+                    </div>    
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        <label for="">توضیحات:</label>
+                        {{meta.meta_value.part_cover_description}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">هات استمپ</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-6 mt-1">
+                        <label for="{{form.hotstamp_sample.id_for_label}}">نمونه هات استمپ:
+                        </label>
+                        {{meta.meta_value.hotstamp_sample}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.hotstamp_foil_color.id_for_label}}">رنگ فویل:
+                        </label>
+                        {{meta.meta_value.hotstamp_foil_color}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.hotstamp_file.id_for_label}}">پیوست فایل هات استمپ:
+                        </label>
+                        {{meta.meta_value.hotstamp_file}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">   
+                    <div class="col-md-3">
+                        <label for="{{form.cliche_type.id_for_label}}">نوع کلیشه:
+                        </label>
+                        {{meta.meta_value.cliche_type}}
+                    </div>
+                    <div class="col">
+                        <label for="{{form.cliche_provider.id_for_label}}">کلیشه
+                        </label>
+                        {{meta.meta_value.cliche_provider}}
+                    </div>   
+                </div>
+                <hr>                        
+                <div class="row">
+                    <div class="col">
+                        <label for="{{form.print_discription.id_for_label}}" >توضیحات:</label>
+                        {{meta.meta_value.print_discription}}     
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">پوشال</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-12 mt-1">
+                        <label for="{{form.sheild.id_for_label}}">پوشال گیری:
+                        </label>
+                        {{meta.meta_value.sheild}}     
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">پنجره چسبانی</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="{{form.window_sticking.id_for_label}}">پنجره چسبانی</label>
+                        {{meta.meta_value.sheild}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.window_width.id_for_label}}">عرض نایلون/طلق:</label>
+                        {{meta.meta_value.window_width}}
+                    </div>
+                    <div class="col-md-4"> 
+                        <!-- ضخامت رو اضافه کنم -->
+                        <label for="{{form.window_width.id_for_label}}">ضخامت نایلون/طلق:</label>
+                        {{meta.meta_value.window_width}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">جعبه چسبانی</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="{{form.box_sticking.id_for_label}}">جعبه چسبانی
+                        </label>
+                        {{meta.meta_value.box_sticking}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">صحافی</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="{{form.bindray_cut.id_for_label}}">برش:
+                        </label>
+                        {{meta.meta_value.bindray_cut}}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{form.bindray_size.id_for_label}}">ابعاد نهایی برش:</label>
+                        {{meta.meta_value.bindray_cut}}
+                    </div>
+                    <label for="{{form.bindray_detail.id_for_label}}"></label>
+                    {{meta.meta_value.bindray_detail}}
+                </div>
+                <hr>
+                <div class="row"> 
+                    <div class="col-md-12">
+                        <label for="">کاور صحافی:</label>
+                        {{meta.meta_value.bindary_cover}}
+                    </div>
+                </div>
+                <hr>                        
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="">کاور صحافی:</label>
+                        {{meta.meta_value.bindary_cover2}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row text-center">
+                <div class="col-md-3">
+                    <label for="{{form.bindray_serial.id_for_label}}">شماره سریال</label>
+                        {{meta.meta_value.bindray_serial}}
+                </div>
+                <div class="col-md-6">
+                        <span class="pr-2 pl-2">شماره سریال:</span>
+                        <span class="pr-2 pl-2">از</span> 
+                        <span class="pl-2 pr-2 text-primary">{{meta.meta_value.bindray_serial_number_start}}</span>
+                        <span class="pr-2 pl-2">تا</span>
+                        <span class="pr-2 pl-2 text-primary">{{meta.meta_value.bindray_serial_number_end}}</span>
+                </div>
+                <div class="col-md-3">
+                    <span class="">ترتیب نسخه ها:</span>
+                    {{meta.meta_value.bindary_order}}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="">توضیحات:</label>
+                    {{meta.meta_value.bindary_description}}
+                </div>
+            </div>
+        </div>
+
+        </div>  
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">شخصی سازی</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="">شخصی سازی:</label>
+                        {{meta.meta_value.customize}}
+
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <span class="mt-2 mr-4">نحوه تحویل پین/سریال/کد:</span>
+                    <div class="col-md-4">
+                        {{meta.meta_value.pin_code}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-right">
+            <h5 class="card-header bg-dark text-light hideChildren">بسته بندی</h5>
+            <div class="card-body hideChildren">
+                <div class="row">
+                    <div class="col-md-12 mt-1">
+                        <label for="{{form.send_type.id_for_label}}">نحوه ارسال به مشتری:</label>
+                        {{meta.meta_value.send_type}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">   
+                    <div class="col-md-4">
+                        <label for="{{form.shiring_amount.id_for_label}}">تعداد شرینگ</label>
+                        {{meta.meta_value.send_type}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.lafaf_amount.id_for_label}}">تعداد لفاف</label>
+                        {{meta.meta_value.lafaf_amount}}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{form.bandinak_amount.id_for_label}}">تعداد بندینک</label>
+                        {{meta.meta_value.bandinak_amount}}
+                    </div>
+                </div>
+                <hr>                        
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-6">
+                            <label for="{{form.packing_type.id_for_label}}">نوع کارتن:
+                            </label>
+                            {{meta.meta_value.packing_type}}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="">توضیحات:</label>
+                            {{meta.meta_value.packing_description}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-6">
+                            <label for="{{form.box_amount.id_for_label}}">تعداد در کارتن:</label>
+                            <span class=" pr-4">{{meta.meta_value.box_amount}}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{form.packing_provider.id_for_label}}">تامین کننده کارتن:</label>
+                            <span class=" pr-4">{{meta.meta_value.packing_provider}}</span>
+                        </div>
+                    </div>   
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-6">
+                            <label>سبد:</label> 
+                            <span>{% if meta.meta_value.basket == True %}دارد{% else %}ندارد{% endif %}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="">نایلون: </label>
+                            <span>{% if meta.meta_value.plastic == True %}دارد{% else %}ندارد{% endif %}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-6">
+                            <label for="{{form.basket_amount.id_for_label}}">تعداد در سبد</label>
+                            {{meta.meta_value.basket_amount}}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{form.basket_provider.id_for_label}}">تامین کننده سبد
+                            </label>
+                            {{meta.meta_value.basket_provider}}
+                        </div>
+                    </div>
+                    <div class="col-md-3 ">
+                        <label for="">توضیحات:</label>
+                        {{meta.meta_value.basket_description}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="{{form.basket_type.id_for_label}}">حمل و نقل:
+                        </label>
+                        <span class="pr-4">{{meta.meta_value.basket_type}}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{form.label_detail.id_for_label}}">موارد مندرج در لیبل اختصاصی:</label>
+                        {{meta.meta_value.label_detail}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                        <div class="col-md-6">
+                            <label for="{{form.label_type.id_for_label}}">لیبل‌ها:
+                            </label>
+                            <span class="pr-4">{{meta.meta_value.label_type}}</span>
+                        </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <label for="">توضیحات:</label>
+                    {{meta.meta_value.other_description}}
+                </div>
+            </div>
+        </div>     
+    </div>
+    <table class="table  rounded shadow text-center table-striped"  dir="rtl">
+        <thead class="thead">
+            <tr>
+                <th scope="col">ردیف</th>
+                <th scope="col">وظیفه جاری</th>
+                <th scope="col">وضعیت وظیفه جاری</th>
+                <th scope="col">امکانات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if actions|length >= 1 %}
+            {% for action in actions %}
+            <tr style="border-right: 3px solid blue;" class="rounded">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{action.process_action}}</td>
+                <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
+            </tr>
+            {% empty %}
+            <li>No objects yet.</li>
+            {% endfor%}
+            {% elif actions|length == 1 %}
+            <tr style="border-right: 3px solid blue;" class="rounded">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{action.process_action}}</td>
+                <td><span class="border " style="background-color: '#{{action.status.color}}';">{{action.status}}</span></td>
+                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a>
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+
+{% block js%}
+
+{% endblock %}
