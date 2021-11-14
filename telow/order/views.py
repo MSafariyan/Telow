@@ -18,6 +18,8 @@ from django.http import JsonResponse
 import json
 from django.core import serializers
 from order.models import order_meta
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 order_success_url = "/dashboard/order/"
 
@@ -32,18 +34,20 @@ def OrderCreat(request):
     if request.method == "POST":
         form = OrderForm(request.POST, request.FILES)
         if form.is_valid():
-    
             data = form.cleaned_data
-            
             # hold model instance
             user_data = data['assignE']
             flow_data = data['flow']
+            myfile = request.FILES['print_plate_file']
+            fs = FileSystemStorage()
+            filename = fs.save(myfile.name, myfile)
+            uploaded_file_url = fs.url(filename)
             
+            data['print_plate_file'] = {'name':myfile.name, 'location':uploaded_file_url}
             # serialize model instance that store them as a json object
             data['flow'] = serializers.serialize('json', [data['flow']])
             data['assignE'] = serializers.serialize('json', [data['assignE']])
-            # data['flow'] = "چاپ کتاب"
-            # data['assignE'] = "mahdi"
+      
             print(data['assignE'])
             print(data['flow'])
             data['delivery_date'] = data['delivery_date'].strftime('%Y/%m/%d')

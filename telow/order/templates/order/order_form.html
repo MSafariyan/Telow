@@ -87,7 +87,7 @@
             <div class="col-md-10 text-center">
                 <h2>order</h2>
 
-                <form action="{% url 'order-creat' %}" method="POST">
+                <form action="{% url 'order-creat' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="card text-right">
                         <h5 class="card-header bg-dark text-light hideChildren" aria-label="Show">عمومی</h5>
