@@ -19,16 +19,16 @@
 {% block content %}
 <div class="mt-5" dir="rtl">
     <div class="row">
-        <div class="col-md-3 pr-5"><span class="h3 p-3">{{order.pk}}</span><span class="h5">:شماره سفارش</span></div>
+        <div class="col-md-3" dir="ltr"><span class="pr-2">{{meta.meta_value.order_number}}</span><span class="h6">:شماره سفارش</span></div>
         <div class="col-md-6">
-            <h1 class="text-center">جزئیات سفارش و درخواست مشتری</h1>
+            <h3 class="text-center">دستور کار</h3>
         </div>
         <div class="col-md-3">
             <p class="h6 pr-5"><span>تاریخ سفارش: </span><span>{{order.created_at|to_jalali:'%Y/%m/%d'}}</span></p>
         </div>
     </div>
     <div class="card mb-5 bq-primary shadow shadow-md mt-5 text-center">
-        <div class="card-header h2 text-center card-title">مشخصات سفارش</div>
+        <div class="card-header h4 text-center card-title">مشخصات اصلی</div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6" dir="rtl">
@@ -45,7 +45,7 @@
         </div>
     </div>
     <div class="card mb-5 bq-primary shadow shadow-md mt-5 text-center">
-        <div class="h5 mt-2 text-center card-title">جزئیات سفارش</div>
+        <div class="h5 mt-2 text-center card-title">جزئیات</div>
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren" aria-label="Show">عمومی</h5>
             <div class="card-body">
@@ -114,6 +114,7 @@
 
             </div>
         </div>
+        {% if perms.main_app.Can_view_paper%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">کاغذ/مقوا</h5>
             <div class="card-body hideChildren">
@@ -176,6 +177,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_litography%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">لیتوگرافی</h5>
             <div class="card-body hideChildren">
@@ -211,6 +214,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_befor_cut%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">برش قبل از چاپ</h5>
             <div class="card-body hideChildren">
@@ -241,6 +246,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_print%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">چاپ</h5>
             <div class="card-body hideChildren">
@@ -317,6 +324,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_hard_cover%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">پوشش تخت</h5>
             <div class="card-body hideChildren">
@@ -346,6 +355,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_plastic_cover%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">سلفون</h5>
             <div class="card-body hideChildren">
@@ -362,6 +373,8 @@
                 </div>                
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_part_cover%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">پوشش موضعی</h5>
             <div class="card-body hideChildren">
@@ -385,6 +398,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_hotstamp%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">هات استمپ</h5>
             <div class="card-body hideChildren">
@@ -427,6 +442,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_shield%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">پوشال</h5>
             <div class="card-body hideChildren">
@@ -439,6 +456,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_window_sticking%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">پنجره چسبانی</h5>
             <div class="card-body hideChildren">
@@ -459,6 +478,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_box_sticking%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">جعبه چسبانی</h5>
             <div class="card-body hideChildren">
@@ -471,6 +492,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_bindray%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">صحافی</h5>
             <div class="card-body hideChildren">
@@ -529,6 +552,8 @@
         </div>
 
         </div>  
+        {% endif %}
+        {% if perms.main_app.Can_view_customize%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">شخصی سازی</h5>
             <div class="card-body hideChildren">
@@ -548,6 +573,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.main_app.Can_view_customize%}
         <div class="card text-right">
             <h5 class="card-header bg-dark text-light hideChildren">بسته بندی</h5>
             <div class="card-body hideChildren">
@@ -651,6 +678,8 @@
                 </div>
             </div>
         </div>     
+        {% endif %}
+
     </div>
     <table class="table  rounded shadow text-center table-striped"  dir="rtl">
         <thead class="thead">

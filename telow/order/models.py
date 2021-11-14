@@ -34,6 +34,25 @@ class order_meta(models.Model):
     order_id = models.OneToOneField(order, on_delete=models.CASCADE, primary_key=True)
     meta_value = models.JSONField(null=True)
     
+    class Meta:
+        permissions = [
+            ("Can_view_litography", "can view litography details"),
+            ("Can_view_paper", "can view paper details"),
+            ("Can_view_hotstamp", "can view hotstamp details"),
+            ("Can_view_befor_cut", "can view befor cut details"),
+            ("Can_view_print",  "can view print details"),
+            ("Can_view_hard_cover", "can view hard cover details"),
+            ("Can_view_plastic_cover", "can view plastice cover details"),
+            ("Can_view_part_cover", "can view part cover details"),
+            ("Can_view_shield", "can view sheidl details"),
+            ("Can_view_window_sticking", "can view window sticking details"),
+            ("Can_view_box_sticking", "can view box sticking details"),
+            ("Can_view_bindray", "can view bindray details"),
+            ("Can_view_customize", "can view customize details"),
+            ("Can_view_packaging", "can view packaging details")
+            
+        ]
+    
     def __str__(self):
         return f" {self.order_id}"
     
