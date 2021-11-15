@@ -98,6 +98,8 @@ def OrderDetail(request, pk):
     current_user = request.user
     current_order = order.objects.get(pk=pk)
     action_perms = auth_user_action.objects.filter(user_id=current_user).values_list('action_id', flat=True)
+    from main_app.models.status_model import status
+    Status = status.objects.get(status_title='پایان یافته')
     actions2 = order_process_action.objects.filter(process_action__action__in=action_perms).filter(order_id=order_id).all()
     actions = order_process_action.objects.filter(order_id=current_order).all()
     meta = order_meta.objects.filter(order_id=order_id).only('meta_value').get()
@@ -109,7 +111,7 @@ def OrderDetail(request, pk):
     return render(
         request, 
         "order/order_detail.html", 
-        {"order": current_order, "actions": actions2, "meta":meta}
+        {"order": current_order, "actions":actions ,"UserActions": actions2, "meta":meta, 'finished':Status}
     )
 
 

@@ -276,7 +276,9 @@
                     <div class="col-md-3">
                         <label for="{{form.color_pallet.id_for_label}}">انتخاب رنگ‌ها:
                         </label>
-                        {{meta.meta_value.color_pallet}}      
+                        {% for x in meta.meta_value.color_pallet %}
+                            {{x.display}}
+                        {% endfor %} 
                     </div>
                     <div class="col-md-3">
                         <label for="{{form.spot_colors.id_for_label}}" >رنگ‌های Spot:</label>
@@ -691,26 +693,53 @@
             </tr>
         </thead>
         <tbody>
-            {% if actions|length >= 1 %}
             {% for action in actions %}
-            <tr style="border-right: 3px solid blue;" class="rounded">
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{action.process_action}}</td>
-                <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
-                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
-            </tr>
-            {% empty %}
-            <li>No objects yet.</li>
+                {% with previous_element=actions|previous:forloop.counter0 %}
+                    {% if previous_element.status == finished or forloop.first %}
+                        {% if action in UserActions%}                    
+                            <tr style="border-right: 3px solid blue;" class="rounded">
+                                <th scope="row">{{forloop.counter}}</th>
+                                <td>{{action.process_action}}</td>
+                                    <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                                    <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
+                            </tr>
+                        {% endif %}
+                    {% else %}
+                     {% if action in UserActions%}  
+                        <tr style="border-right: 3px solid blue;" class="rounded">
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td>{{action.process_action}}</td>
+                                <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                                <td>وضعیت عملیات قبلی پایان نیافته</td>
+                        </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endwith %}        
             {% endfor%}
-            {% elif actions|length == 1 %}
-            <tr style="border-right: 3px solid blue;" class="rounded">
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{action.process_action}}</td>
-                <td><span class="border " style="background-color: '#{{action.status.color}}';">{{action.status}}</span></td>
-                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a>
-                </td>
-            </tr>
-            {% endif %}
+                <!-- {% for action in actions %}
+                        {% if forloop.first %}
+                        <tr style="border-right: 3px solid blue;" class="rounded">
+                            <th scope="row">{{action.process_action}}</th>
+                            <td>{{action.process_action}}</td>
+                                <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
+                        </tr>
+                        {% endif %}
+                        {% with previous_element=actions|previous:forloop.counter0 %}
+
+                        {% if previous_element.status == finished %} 
+                        <tr style="border-right: 3px solid blue;" class="rounded">
+                            <th scope="row">{{previous_element}}</th>
+                            <td>{{action.process_action}}</td>
+                                <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
+                        {% else %}
+                                <td><span class="border p-2 rounded" style="background-color: cyan;">در انتظار تایید</span></td>
+                                <td><p>مرحله قبل به پایان نرسیده</p></td>
+                        </tr>
+                        {% endif %}
+                    {% endwith %}
+                {% endfor%} -->
         </tbody>
     </table>
 </div>
