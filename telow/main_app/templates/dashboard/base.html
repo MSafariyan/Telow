@@ -184,7 +184,7 @@
                 </svg><span class="h4">سفارشات</span>
               </a>
             </li>
-            {% if perms.auth.delete_user %}
+            {% if perms.main_app.view_status %}
             <li class="nav-item">
               <a class="nav-link" href='{% url "status-list"%}'>
                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 20 20" fill="none"
@@ -195,9 +195,10 @@
                   <path
                     d="M4 2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2h2c-.167.5-.8 1.6-2 2v2h2c-.167.5-.8 1.6-2 2v2h2c-.167.5-.8 1.6-2 2v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1c-1.2-.4-1.833-1.5-2-2h2V8c-1.2-.4-1.833-1.5-2-2h2V4c-1.2-.4-1.833-1.5-2-2h2zm2-1a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6z" />
                 </svg><span class="h4">وضیعت‌ها</span>
-
               </a>
             </li>
+            {% endif %}
+            {% if perms.main_app.view_action %}
             <li class="nav-item">
               <a class="nav-link" href='{% url "action-list" %}'>
                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 20 20" fill="none"
@@ -208,6 +209,8 @@
                 </svg><span class="h4">وظیفه</span>‌
               </a>
             </li>
+            {% endif %}
+            {% if perms.main_app.view_process %}
             <li class="nav-item">
               <a class="nav-link" href='{% url "process-list" %}'>
                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 20 20" fill="none"
@@ -219,7 +222,6 @@
               </a>
             </li>
             {% endif %}
-
           </ul>
           </ul>
         </div>
@@ -230,7 +232,6 @@
       </main>
     </div>
   </div>
-
 {% block js %}
 {% endblock %}
 </body>

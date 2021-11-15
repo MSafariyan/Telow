@@ -7,6 +7,9 @@ from main_app.models.department_model import department
 # list department
 
 def DepartmentList(request): 
-    department_list = department.objects.all()
-    
-    return render(request, "main_app/department/department_list.html")
+    if request.user.has_perm('auth.delete_user'):
+        department_list = department.objects.all()
+        
+        return render(request, "main_app/department/department_list.html")
+    else:
+        return redirect('index')

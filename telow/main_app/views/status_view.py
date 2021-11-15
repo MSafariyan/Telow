@@ -19,45 +19,57 @@ status_success_url = "/dashboard/status/"
 @method_decorator(login_required, name="dispatch")
 class StatusList(ListView):
     model = status
+    def dispatch(self, *args, **kwargs):
+        if not (
+            self.request.user.is_superuser or
+            self.request.user.has_perm('main_app.view_status') 
+        ):
+            return redirect('index')
+        return super(StatusList, self).dispatch(*args, **kwargs)
 
 @login_required()
 def StatusCreate(request):
-    if request.method == "GET":
-        form = StatusForm()
-        
-        return render(request, "main_app/status_form.html", {"form":form})
-    
-    if request.method == "POST":
-        form = StatusForm(request.POST)
-        if form.is_valid():
-            new_status = status(status_title=form.cleaned_data['name'], description=form.cleaned_data['description'], color=form.cleaned_data['color'])
-            new_status.save()
+    if request.user.has_perm('main_app.create_status'):
+        if request.method == "GET":
+            form = StatusForm()
             
-            return redirect('status-list')
+            return render(request, "main_app/status_form.html", {"form":form})
+        
+        if request.method == "POST":
+            form = StatusForm(request.POST)
+            if form.is_valid():
+                new_status = status(status_title=form.cleaned_data['name'], description=form.cleaned_data['description'], color=form.cleaned_data['color'])
+                new_status.save()
+                
+                return redirect('status-list')
+    else:
+        return redirect('index')      
             
 @login_required()
 def StatusUpdate(request, pk):
-    if request.method == "GET":
-        current_status = status.objects.get(pk=pk)
-        data = {
-            "name": current_status.status_title,
-            "description": current_status.description,
-            "color": current_status.color
-        }
-        form = StatusForm(initial=data)
-        return render(request, "main_app/status_form_update.html", {"form":form, "obj":current_status})
-    
-    if request.method == "POST":
-        form = StatusForm(request.POST)
-        current_status = status.objects.get(pk=pk)
-        if form.is_valid():
-            current_status.status_title = form.cleaned_data['name']
-            current_status.description = form.cleaned_data['description']
-            current_status.color = form.cleaned_data['color']
-            current_status.save()
-            
-            return redirect("status-list")
-            
+    if request.user.has_perm('main_app.edit_status'):
+        if request.method == "GET":
+            current_status = status.objects.get(pk=pk)
+            data = {
+                "name": current_status.status_title,
+                "description": current_status.description,
+                "color": current_status.color
+            }
+            form = StatusForm(initial=data)
+            return render(request, "main_app/status_form_update.html", {"form":form, "obj":current_status})
+        
+        if request.method == "POST":
+            form = StatusForm(request.POST)
+            current_status = status.objects.get(pk=pk)
+            if form.is_valid():
+                current_status.status_title = form.cleaned_data['name']
+                current_status.description = form.cleaned_data['description']
+                current_status.color = form.cleaned_data['color']
+                current_status.save()
+                
+                return redirect("status-list")
+    else:
+        return redirect('index')            
             
 
         
@@ -66,5 +78,11 @@ def StatusUpdate(request, pk):
 @method_decorator(login_required, name="dispatch")
 class StatusDelete(DeleteView):
     model = status
-
+    def dispatch(self, *args, **kwargs):
+        if not (
+            self.request.user.is_superuser or
+            self.request.user.has_perm('main_app.delete_status') 
+        ):
+            return redirect('index')
+        return super(StatusDelete, self).dispatch(*args, **kwargs)
     success_url = status_success_url
