@@ -84,15 +84,15 @@
                         {% if meta.meta_value.outsource == "True" %}
                         دارد
                         {% else %}
-                        ----
+                        ندارد
                         {% endif %}
                     </div>
                     <div class="col-md-3">
                         <label for="{{form.outsource_action.id_for_label}}">عملیات برون سپاری:</label>
                         {% if meta.meta_value.outsource == "True" %}
-                        {{meta.meta_value.outsource_action}}
+                            {{meta.meta_value.outsource_action}}
                         {% else %}
-                        ----
+                            ----
                         {% endif %}
                     </div>
                 </div>
@@ -209,7 +209,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="{{form.print_plate_file.id_for_label}}" >آدرس فایل گرافیکی:</label>
-                        {{meta.meta_value.print_plate_file}}
+                        <a href="{{meta.meta_value.print_plate_file.location}}" download>{{meta.meta_value.print_plate_file.name}}</a>
                     </div>
                 </div>
             </div>
@@ -314,7 +314,7 @@
                     </div>
                     <div class="col-md-3">
                         <label for="{{form.print_graphhical_file.id_for_label}}" >پیوست فایل گرافیکی:</label>
-                        {{meta.meta_value.print_graphhical_file}} 
+                        <a href="{{meta.meta_value.print_graphhical_file.location}}" download>{{meta.meta_value.print_graphhical_file.name}}</a>
                     </div>
                 </div>
                 <hr>
@@ -345,7 +345,7 @@
                     <div class="col-md-4 mt-4">
                         <label for="{{form.flat_cover_file.id_for_label}}">فایل پیوست پوشش
                         </label>
-                        {{meta.meta_value.flat_cover_file}}  
+                        <a href="{{meta.meta_value.flat_cover_file.location}}" download>{{meta.meta_value.flat_cover_file.name}}</a>
                     </div>
                 </div>
                 <hr>
@@ -388,7 +388,7 @@
                     </div>     
                     <div class="col-md-6">
                         <label for="{{form.flat_cover_file.id_for_label}}">پیوست فایل پوشش موضعی</label>
-                        {{meta.meta_value.flat_cover_file}}
+                        <a href="{{meta.meta_value.flat_cover_file.location}}" download>{{meta.meta_value.flat_cover_file.name}}</a>
                     </div>    
                 </div>
                 <hr>
@@ -419,7 +419,7 @@
                     <div class="col-md-3">
                         <label for="{{form.hotstamp_file.id_for_label}}">پیوست فایل هات استمپ:
                         </label>
-                        {{meta.meta_value.hotstamp_file}}
+                        <a href="{{meta.meta_value.hotstamp_file.location}}" download>{{meta.meta_value.hotstamp_file.name}}</a>
                     </div>
                 </div>
                 <hr>
@@ -681,7 +681,6 @@
             </div>
         </div>     
         {% endif %}
-
     </div>
     <table class="table  rounded shadow text-center table-striped"  dir="rtl">
         <thead class="thead">
@@ -710,36 +709,12 @@
                             <th scope="row">{{forloop.counter}}</th>
                             <td>{{action.process_action}}</td>
                                 <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
-                                <td>وضعیت عملیات قبلی پایان نیافته</td>
+                                <td>وضعیت عملیات قبلی به {{previous_element.status}} تغییر یافته است</td>
                         </tr>
                         {% endif %}
                     {% endif %}
                 {% endwith %}        
             {% endfor%}
-                <!-- {% for action in actions %}
-                        {% if forloop.first %}
-                        <tr style="border-right: 3px solid blue;" class="rounded">
-                            <th scope="row">{{action.process_action}}</th>
-                            <td>{{action.process_action}}</td>
-                                <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
-                                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
-                        </tr>
-                        {% endif %}
-                        {% with previous_element=actions|previous:forloop.counter0 %}
-
-                        {% if previous_element.status == finished %} 
-                        <tr style="border-right: 3px solid blue;" class="rounded">
-                            <th scope="row">{{previous_element}}</th>
-                            <td>{{action.process_action}}</td>
-                                <td><span class="border p-2 rounded" style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
-                                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
-                        {% else %}
-                                <td><span class="border p-2 rounded" style="background-color: cyan;">در انتظار تایید</span></td>
-                                <td><p>مرحله قبل به پایان نرسیده</p></td>
-                        </tr>
-                        {% endif %}
-                    {% endwith %}
-                {% endfor%} -->
         </tbody>
     </table>
 </div>

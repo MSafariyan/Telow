@@ -23,8 +23,6 @@ from django.core.files.storage import FileSystemStorage
 from order.models import order_meta
 from django.contrib import messages
 
-
-
 order_success_url = "/dashboard/order/"
 
 @login_required()
@@ -32,23 +30,28 @@ def OrderCreat(request):
     if request.user.has_perm('order.create_order'):
         if request.method == "GET":
             form = OrderForm()
-            
             return render(request, "order/order_form.html", {"form":form})
-        
-        
         if request.method == "POST":
             form = OrderForm(request.POST, request.FILES)
             if form.is_valid():
+                files = request.FILES
+                
+              
                 data = form.cleaned_data
+                
+                for file in files.items():
+                    fs = FileSystemStorage()
+                    filename = fs.save(file[1].name, file[1])
+                    print(filename)
+                    uploaded_file_url = fs.url(filename)
+                    print(uploaded_file_url)
+                    data[file[0]] = {'name':file[1].name, 'location':uploaded_file_url}
+                    print(data['print_graphhical_file'])
+                
+                    
                 # hold model instance
                 user_data = data['assignE']
-                flow_data = data['flow']
-                myfile = request.FILES['print_plate_file']
-                fs = FileSystemStorage()
-                filename = fs.save(myfile.name, myfile)
-                uploaded_file_url = fs.url(filename)
-                
-                data['print_plate_file'] = {'name':myfile.name, 'location':uploaded_file_url}
+                flow_data = data['flow']                
                 # serialize model instance that store them as a json object
                 data['flow'] = serializers.serialize('json', [data['flow']])
                 data['assignE'] = serializers.serialize('json', [data['assignE']])
