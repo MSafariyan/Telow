@@ -20,107 +20,78 @@ from django.core import serializers
 from order.models import order_meta
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from order.models import order_meta
+from django.contrib import messages
+
+
 
 order_success_url = "/dashboard/order/"
 
 @login_required()
 def OrderCreat(request):
-    if request.method == "GET":
-        form = OrderForm()
+    if request.user.has_perm('order.create_order'):
+        if request.method == "GET":
+            form = OrderForm()
+            
+            return render(request, "order/order_form.html", {"form":form})
         
-        return render(request, "order/order_form.html", {"form":form})
-    
-    
-    if request.method == "POST":
-        form = OrderForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.cleaned_data
-            # hold model instance
-            user_data = data['assignE']
-            flow_data = data['flow']
-            myfile = request.FILES['print_plate_file']
-            fs = FileSystemStorage()
-            filename = fs.save(myfile.name, myfile)
-            uploaded_file_url = fs.url(filename)
-            
-            data['print_plate_file'] = {'name':myfile.name, 'location':uploaded_file_url}
-            # serialize model instance that store them as a json object
-            data['flow'] = serializers.serialize('json', [data['flow']])
-            data['assignE'] = serializers.serialize('json', [data['assignE']])
-      
-            print(data['assignE'])
-            print(data['flow'])
-            data['delivery_date'] = data['delivery_date'].strftime('%Y/%m/%d')
-            
-            # create order record on order table
-            # creating meta needs to have a new instance of order
-            # for some reasons title of each order must be uniqe
-            try:
-                new_order = order(order_title=data['title'], customer_id=user_data, priority=data['priority'], process_id=flow_data)
-                new_order.save()
-            except Exception as e:
-                return JsonResponse({"Result":"BAD", "error":f'{e}'})
-            # try to create order meta
-            try:
-                new_order_meta = order_meta(order_id=new_order, meta_value=data)
-                new_order_meta.save()
-            except Exception as e:
-                return JsonResponse({"Result":"BAD", "error":f'{e}'})
-            
-            # try to create order actions
-            try:
-                actions = process_action.objects.filter(process_id=flow_data)
-                status_action = status.objects.get(status_title="در دست بررسی")
-                for action in actions:
-                    new_order_meta = order_process_action(
-                        order_id=new_order, process_action=action, status=status_action
-                    )
+        
+        if request.method == "POST":
+            form = OrderForm(request.POST, request.FILES)
+            if form.is_valid():
+                data = form.cleaned_data
+                # hold model instance
+                user_data = data['assignE']
+                flow_data = data['flow']
+                myfile = request.FILES['print_plate_file']
+                fs = FileSystemStorage()
+                filename = fs.save(myfile.name, myfile)
+                uploaded_file_url = fs.url(filename)
+                
+                data['print_plate_file'] = {'name':myfile.name, 'location':uploaded_file_url}
+                # serialize model instance that store them as a json object
+                data['flow'] = serializers.serialize('json', [data['flow']])
+                data['assignE'] = serializers.serialize('json', [data['assignE']])
+        
+                print(data['assignE'])
+                print(data['flow'])
+                data['delivery_date'] = data['delivery_date'].strftime('%Y/%m/%d')
+                
+                # create order record on order table
+                # creating meta needs to have a new instance of order
+                # for some reasons title of each order must be uniqe
+                try:
+                    new_order = order(order_title=data['title'], customer_id=user_data, priority=data['priority'], process_id=flow_data)
+                    new_order.save()
+                except Exception as e:
+                    return JsonResponse({"Result":"BAD", "error":f'{e}'})
+                # try to create order meta
+                try:
+                    new_order_meta = order_meta(order_id=new_order, meta_value=data)
                     new_order_meta.save()
-            except Exception as e:
-                return JsonResponse({"Result":"BAD", "error":f'{e}'})
-            
-            return JsonResponse({"Result":'OK','Fields':data}, safe=False)
-            
-        else:
-            return HttpResponse(f"{form.errors.as_json()} ")
-
-# @method_decorator(login_required, name="dispatch")
-# class OrderCreat(CreateView):
-#     model = order
-
-#     fields = ["order_title", "customer_id", "priority", "process_id"]
-
-#     def post(self, request):
-#         order_title_form = self.request.POST.get("order_title")
-#         customer_id_form = self.request.POST.get("customer_id")
-#         priority_form = self.request.POST.get("priority")
-#         process_form = self.request.POST.get("process_id")
-
-#         assignE = User.objects.get(pk=customer_id_form)
-#         process2 = process.objects.get(pk=int(process_form))
-
-#         actions = process_action.objects.filter(process_id=process_form)
-
-#         new_order = order(
-#             order_title=order_title_form,
-#             customer_id=assignE,
-#             priority=priority_form,
-#             process_id=process2,
-#         )
-#         new_order.save()
-
-#         status_action = status.objects.get(status_title="در دست بررسی")
-#         current_order = new_order
-
-        # for action in actions:
-        #     new_order_meta = order_meta(
-        #         order_id=current_order, process_action=action, status=status_action
-        #     )
-        #     new_order_meta.save()
-
-#         return redirect("order-list")
-
-from order.models import order_meta
+                except Exception as e:
+                    return JsonResponse({"Result":"BAD", "error":f'{e}'})
+                
+                # try to create order actions
+                try:
+                    actions = process_action.objects.filter(process_id=flow_data)
+                    status_action = status.objects.get(status_title="در دست بررسی")
+                    for action in actions:
+                        new_order_meta = order_process_action(
+                            order_id=new_order, process_action=action, status=status_action
+                        )
+                        new_order_meta.save()
+                except Exception as e:
+                    return JsonResponse({"Result":"BAD", "error":f'{e}'})
+                
+                return JsonResponse({"Result":'OK','Fields':data}, safe=False)
+                
+            else:
+                return HttpResponse(f"{form.errors.as_json()} ")
+    else:
+        messages.add_message(request, messages.WARNING, 'شما دسترسی لازم به این صفحه را ندارید',extra_tags='warning')
+        return redirect('order-list')
+    
 @login_required
 def OrderDetail(request, pk):
     order_id = pk
@@ -171,8 +142,3 @@ class OrderMetaUpdate(UpdateView):
 
     success_url = "/dashboard/order"
     
-# def OrderMetaUpdate(request, pk):
-#     obj = order_meta.objects.get(pk=pk)
-#     form =
-    
-#     return HttpResponse(obj)
