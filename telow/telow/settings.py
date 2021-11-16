@@ -12,22 +12,26 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import environ
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--4x#67n7zacsyjbpga8cg62svu3$dtti_$h_vg^lo0lxjv1@n3'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ["0.0.0.0", 'localhost', '127.0.0.1', '192.168.80.171']
+
+SESSION_COOKIE_SECURE=env('SESSION_COOKIE_SECURE')
 
 LOGIN_URL = "/admin/login/"
 
@@ -43,8 +47,6 @@ INSTALLED_APPS = [
     'main_app',
     'order',
     'jalali_date'
-    
-
     ]
 
 MIDDLEWARE = [
