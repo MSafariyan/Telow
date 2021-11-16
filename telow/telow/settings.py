@@ -31,8 +31,6 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ["0.0.0.0", 'localhost', '127.0.0.1', '192.168.80.171']
 
-SESSION_COOKIE_SECURE=env('SESSION_COOKIE_SECURE')
-
 LOGIN_URL = "/admin/login/"
 
 # Application definition
