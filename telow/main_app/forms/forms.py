@@ -6,6 +6,13 @@ from order.models import order_process_action
 from django.contrib.auth import get_user_model
 
 class ActionForm(forms.Form):
+    """ 
+        Create or edit actions
+        
+        Keywords:
+        name        -- the name of action
+        description -- the description of action
+    """
     class Meta:
         model = Action
 
@@ -24,6 +31,14 @@ class ActionForm(forms.Form):
 
 
 class StatusForm(forms.Form):
+    """
+        Status of actions in Process_action table,
+        
+        Keywords:
+        name        -- the name of status
+        description -- the description of status
+        color       -- the color of status button in view
+    """
     class Meta:
         model = status
 
@@ -44,6 +59,9 @@ class StatusForm(forms.Form):
 
 
 class OrderMetaForm(forms.Form):
+    """
+        Change status of process_actions
+    """
     status = forms.ModelMultipleChoiceField(
         queryset=status.objects.all(), label="وضعیت"
     )

@@ -6,18 +6,14 @@ from jalali_date.widgets import AdminJalaliDateWidget, AdminSplitJalaliDateTime
 
 
 class OrderForm(forms.Form):
-    LASTMAN_STANDING = "DO OR DIE"
-    CRITICAL_PRIORITY = "Critical"
-    HIGH_PRIORITY = "High"
-    MIDDLE_PRIORITY = "Middle"
-    LOW_PRIORITY = "Low"
+    #  Just a fatty form to take orders.
 
     INDEED_PRIORITY = [
-        (LASTMAN_STANDING, 'Do or die'),
-        (CRITICAL_PRIORITY, 'Critical priority'),
-        (HIGH_PRIORITY, 'High priority'),
-        (MIDDLE_PRIORITY, 'Middle priority'),
-        (LOW_PRIORITY, 'Low priority'),
+        ("DO OR DIE", 'Do or die'),
+        ("Critical", 'Critical priority'),
+        ("High", 'High priority'),
+        ("Middle", 'Middle priority'),
+        ("Low", 'Low priority'),
         
     ]
     

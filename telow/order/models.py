@@ -5,24 +5,20 @@ from main_app.models.status_model import status
 # Create your models here.
 
 class order(models.Model):
-    LASTMAN_STANDING = "DO OR DIE"
-    CRITICAL_PRIORITY = "Critical"
-    HIGH_PRIORITY = "High"
-    MIDDLE_PRIORITY = "Middle"
-    LOW_PRIORITY = "Low"
-
+    # This model just save main data of orders like title, customer's name, priority, and etc
+    
     INDEED_PRIORITY = [
-        (LASTMAN_STANDING, 'Do or die'),
-        (CRITICAL_PRIORITY, 'Critical priority'),
-        (HIGH_PRIORITY, 'High priority'),
-        (MIDDLE_PRIORITY, 'Middle priority'),
-        (LOW_PRIORITY, 'Low priority'),
+        ("DO OR DIE", 'Do or die'),
+        ("Critical", 'Critical priority'),
+        ("High", 'High priority'),
+        ("Middle", 'Middle priority'),
+        ( "Low", 'Low priority'),
         
     ]
     
     order_title = models.CharField(max_length=100, unique=True)
     customer_id = models.ForeignKey(get_user_model(), null=True, on_delete=models.PROTECT)
-    priority = models.CharField(max_length=11, choices=INDEED_PRIORITY, default=LOW_PRIORITY)
+    priority = models.CharField(max_length=11, choices=INDEED_PRIORITY, default="Low priority")
     process_id = models.ForeignKey(process, on_delete=models.SET_NULL, null=True)
     created_at  = models.DateTimeField(null=True, blank=True, auto_now_add=True)
     updated_at  = models.DateTimeField(null=True, blank=True, auto_now=True)
@@ -31,9 +27,18 @@ class order(models.Model):
         return self.order_title
 
 class order_meta(models.Model):
+    """
+        other details of order in Fatty(OrderForm) form will save as a json with this model
+    """
+    
     order_id = models.OneToOneField(order, on_delete=models.CASCADE, primary_key=True)
     meta_value = models.JSONField(null=True)
     
+    """
+        because this app is just a local private service for our company,
+        we need have some custome permission to show each section of order form
+        to related department
+    """
     class Meta:
         permissions = [
             ("Can_view_litography", "can view litography details"),
@@ -58,6 +63,10 @@ class order_meta(models.Model):
     
 
 class order_process_action(models.Model):
+    """
+        process actions are the actions that you declear and connect it to a process then 
+        each order form have their own process actions
+    """
     order_id = models.ForeignKey(order, on_delete=models.CASCADE)
     process_action = models.ForeignKey(process_action, on_delete=models.CASCADE)
     status = models.ForeignKey(status, on_delete=models.PROTECT, null=True,)

@@ -49,14 +49,15 @@ def OrderCreat(request):
                         "name": file[1].name,
                         "location": uploaded_file_url,
                     }
-                    print(data["print_graphhical_file"])
 
                 # hold model instance
                 user_data = data["assignE"]
                 flow_data = data["flow"]
-                # serialize model instance that store them as a json object
+                
+                # serialize model instance to have json format
                 data["flow"] = serializers.serialize("json", [data["flow"]])
                 data["assignE"] = serializers.serialize("json", [data["assignE"]])
+                
 
                 print(data["assignE"])
                 print(data["flow"])
@@ -129,10 +130,8 @@ def OrderDetail(request, pk):
     actions = order_process_action.objects.filter(order_id=current_order).all()
     meta = order_meta.objects.filter(order_id=order_id).only("meta_value").get()
     users = json.loads(meta.meta_value["assignE"])
-
     meta.meta_value["assignE"] = users
-    # return HttpResponse(f"{meta.meta_value['title']} | {meta.meta_value['assignE']} | {meta.meta_value['flow']}")
-    # print(users[0]['fields']['username'])
+
     return render(
         request,
         "order/order_detail.html",
@@ -161,12 +160,6 @@ def OrderListView(request):
         order_meta_list.append({"order": order_metas, "order_meta": meta})
         print(order_meta_list)
     return render(request, "order/order_list.html", {"orders": order_meta_list})
-
-
-# def OrderMetaStatus(request, pk):
-#     order_meta_status = order_meta.objects.get(pk=pk)
-
-#     return render(request, "order/order_meta_form.html", {"oder_meta":order_meta_status})
 
 
 @method_decorator(login_required, name="dispatch")
