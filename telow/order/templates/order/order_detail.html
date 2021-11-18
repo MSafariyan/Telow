@@ -89,6 +89,7 @@
                     <div class="col-md-4">
                         <label for="{{form.final_circulation.id_for_label}}">تیراژ نهایی:</label>
                         {{meta.meta_value.final_circulation}}
+                        {{meta.meta_value.final_circulation_type}}
                     </div>
                     <div class="col-md-4">
                         <label for="{{form.layers.id_for_label}}">تعداد لایه ها:</label>
@@ -175,7 +176,11 @@
                     </div>
                     <div class="col-md-4">
                         <label for="{{form.print_plate_burn.id_for_label}}">زینک سوزی:</label>
-                        {{meta.meta_value.print_plate_burn}}
+                        {% if meta.meta_value.print_plate_burn == True %}
+                        دارد
+                        {% else %}
+                        ندارد
+                        {% endif %}
                     </div>
                     <div class="col-md-4">
                         <label for="{{form.paper_work_size.id_for_label}}">ابعاد کار:</label>
@@ -228,7 +233,11 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label for="{{form.return_wasted_paper.id_for_label}}">کناره کاغذ/مقوا تحویل مشتری گردد:</label>
-                        {{meta.meta_value.return_wasted_paper}}
+                        {% if meta.meta_value.return_wasted_paper == True %}
+                        دارد
+                        {% else %}
+                        ندارد
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -241,7 +250,11 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label for="{{form.qc.id_for_label}}">تصدیق چاپ توسط QC:</label>
-                        {{meta.meta_value.qc}}
+                        {% if meta.meta_value.qc == True %}
+                        دارد
+                        {% else %}
+                        ندارد
+                        {% endif %}
                     </div>
                     <div class="col-md-3">
                         <label for="{{form.superviser.id_for_label}}">ناظر:
@@ -320,12 +333,16 @@
                     <div class="col-md-4">
                         <label for="{{form.flat_cover.id_for_label}}">نوع پوشش تخت:
                         </label>
-                        {{meta.meta_value.flat_cover}}
+                        {% for covers in meta.meta_value.flat_cover %}
+                            <span class="btn btn-outline-primary btn-sm">{{covers}}</span>
+                        {% endfor %}
                     </div>
                     <div class="col-md-4">
                         <label for="{{form.flat_cover_detail.id_for_label}}">محل خالی کردن:
                         </label>
-                        {{meta.meta_value.flat_cover_detail}}
+                        {% for covers in meta.meta_value.flat_cover_detail %}
+                            <span class="btn btn-outline-primary btn-sm">{{covers}}</span>
+                        {% endfor %}
                     </div>
                     <div class="col-md-4">
                         <label for="{{form.flat_cover_file.id_for_label}}">فایل پیوست پوشش
@@ -352,7 +369,9 @@
                     <div class="col-md-6">
                         <label for="{{form.plastic_covers.id_for_label}}">گزینه های سلفون
                         </label>
-                        {{meta.meta_value.plastic_covers}}
+                        {% for cover in meta.meta_value.plastic_covers %}
+                            <span class="btn btn-outline-primary btn-sm">{{cover}}</span>
+                        {% endfor %}
                     </div>
                     <div class="col-md-6">
                         <label for="{{form.plastic_discription.id_for_label}}">توضیحات:</label>
@@ -370,7 +389,9 @@
                     <div class="col-md-6">
                         <label for="{{form.part_cover.id_for_label}}">پوشش موضعی
                         </label>
-                        {{meta.meta_value.part_cover}}
+                        {% for cover in meta.meta_value.part_cover %}
+                            <span class="btn btn-outline-primary btn-sm">{{cover}}</span>
+                        {% endfor %}
                     </div>
                     <div class="col-md-6">
                         <label for="{{form.flat_cover_file.id_for_label}}">پیوست فایل پوشش موضعی</label>
@@ -477,7 +498,9 @@
                     <div class="col-md-12">
                         <label for="{{form.box_sticking.id_for_label}}">جعبه چسبانی
                         </label>
-                        {{meta.meta_value.box_sticking}}
+                        {% for box in meta.meta_value.box_sticking %}
+                            <span class="btn btn-outline-primary btn-sm">{{box}}</span>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -499,22 +522,32 @@
                     </div>
                     <div class="col-md-4">
                         <label for="{{form.bindray_detail.id_for_label}}">جزئیات: </label>
-                        {{meta.meta_value.bindray_detail}}
+                        {% for box in meta.meta_value.bindray_detail %}
+                            <span class="btn btn-outline-primary btn-sm">{{box}}</span>
+                        {% endfor %}
                     </div>
                     <div class="col-md-4">
                         <label for="">کاور صحافی ۱:</label>
-                        {{meta.meta_value.bindary_cover}}
+                        {% for box in meta.meta_value.bindary_cover %}
+                            <span class="btn btn-outline-primary btn-sm">{{box}}</span>
+                        {% endfor %}
                     </div>
                     <div class="col-md-4">
                         <label for="">کاور صحافی ۲:</label>
-                        {{meta.meta_value.bindary_cover2}}
+                        {% for box in meta.meta_value.bindary_cover2 %}
+                            <span class="btn btn-outline-primary btn-sm">{{box}}</span>
+                        {% endfor %}
                     </div>
                 </div>
                 <hr>
                 <div class="row text-center">
                     <div class="col-md-3">
-                        <label for="{{form.bindray_serial.id_for_label}}">شماره سریال</label>
-                        {{meta.meta_value.bindray_serial}}
+                        <label for="{{form.bindray_serial.id_for_label}}">شماره سریال: </label>
+                        {% if meta.meta_value.bindray_serial == True %}
+                            <span class="btn btn-outline-success">دارد</span>
+                        {% else %}
+                            <span class="btn btn-outline-danger">ندارد</span>
+                        {% endif%}
                     </div>
                     <div class="col-md-6">
                         <span class="pr-2 pl-2">شماره سریال:</span>
@@ -546,7 +579,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label for="">شخصی سازی:</label>
-                        {{meta.meta_value.customize}}
+                        {% for box in meta.meta_value.customize %}
+                            <span class="btn btn-outline-primary btn-sm">{{box}}</span>
+                        {% endfor %}
                     </div>
                     <div class="col-md-6">
                         <span class="mt-2 mr-4">نحوه تحویل پین/سریال/کد:</span>
@@ -562,7 +597,9 @@
                     <div class="row">
                         <div class="col-md-3">
                             <label for="{{form.send_type.id_for_label}}">نحوه ارسال به مشتری:</label>
-                            {{meta.meta_value.send_type}}
+                            {% for box in meta.meta_value.send_type %}
+                            <span class="btn btn-outline-primary btn-sm">{{box}}</span>
+                             {% endfor %}
                         </div>
                         <div class="col-md-3">
                             <label for="{{form.shiring_amount.id_for_label}}">تعداد شرینگ</label>
@@ -601,11 +638,19 @@
                     <div class="row">
                         <div class="col-md-3">
                             <label>سبد:</label>
-                            <span>{% if meta.meta_value.basket == True %}دارد{% else %}ندارد{% endif %}</span>
+                            {% if meta.meta_value.basket == True %}
+                            <span class="btn btn-outline-success">دارد</span>
+                            {% else %}
+                                <span class="btn btn-outline-danger">ندارد</span>
+                            {% endif%}
                         </div>
                         <div class="col-md-3">
                             <label for="">نایلون: </label>
-                            <span>{% if meta.meta_value.plastic == True %}دارد{% else %}ندارد{% endif %}</span>
+                            {% if meta.meta_value.plastic == True %}
+                            <span class="btn btn-outline-success">دارد</span>
+                            {% else %}
+                                <span class="btn btn-outline-danger">ندارد</span>
+                            {% endif%}
                         </div>
                         <div class="col-md-3">
                             <label for="{{form.basket_amount.id_for_label}}">تعداد در سبد</label>
@@ -628,7 +673,9 @@
                         <div class="col-md-4">
                             <label for="{{form.basket_type.id_for_label}}">حمل و نقل:
                             </label>
-                            <span class="pr-4">{{meta.meta_value.basket_type}}</span>
+                            {% for box in meta.meta_value.basket_type %}
+                            <span class="btn btn-outline-primary btn-sm">{{box}}</span>
+                             {% endfor %}
                         </div>
                         <div class="col-md-4">
                             <label for="{{form.label_detail.id_for_label}}">موارد مندرج در لیبل اختصاصی:</label>
