@@ -4,6 +4,7 @@ from .models.status_model import status
 from .models.process_model import process, process_action
 from order.models import order, order_process_action, order_meta
 from main_app.models.department_model import department
+from main_app.models.customer_model import customer
 
 # Register your models here.
 
@@ -31,3 +32,4 @@ admin.site.register(process)
 admin.site.register(process_action)
 admin.site.register(department)
 admin.site.register(order_meta, orderMetaAdmin)
+admin.site.register(customer)
