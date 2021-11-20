@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from main_app.models.process_model import process
 from jalali_date.fields import JalaliDateField, SplitJalaliDateTimeField
 from jalali_date.widgets import AdminJalaliDateWidget, AdminSplitJalaliDateTime
+from main_app.models.customer_model import customer
 
 
 class OrderForm(forms.Form):
@@ -40,7 +41,7 @@ class OrderForm(forms.Form):
 
     assignE = forms.ModelChoiceField(
         required=False,
-        queryset=get_user_model().objects.filter(is_staff=True).all(),
+        queryset=customer.objects.all(),
         label="مشتری",
         widget=forms.Select(attrs={"class": "js-example-basic-single form-control"}),
     )
