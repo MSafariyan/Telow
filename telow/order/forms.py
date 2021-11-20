@@ -25,14 +25,14 @@ class OrderForm(forms.Form):
     priority = forms.ChoiceField(
         label="اولویت",
         choices=INDEED_PRIORITY,
-        widget=forms.Select(attrs={'class':'js-example-basic-single form-control'})
+        widget=forms.Select(attrs={'class':'js-example-basic-single'})
     )
     
     flow = forms.ModelChoiceField(
         required=True,
         queryset=process.objects.filter(isEnable=True).all(),
         label="روند",
-        widget=forms.Select(attrs={"class": "js-example-basic-single form-control"}),
+        widget=forms.Select(attrs={"class": "js-example-basic-single"}),
     )
 
     delivery_date = JalaliDateField(# date format is  "yyyy-mm-dd"
@@ -43,7 +43,7 @@ class OrderForm(forms.Form):
         required=False,
         queryset=customer.objects.all(),
         label="مشتری",
-        widget=forms.Select(attrs={"class": "js-example-basic-single form-control"}),
+        widget=forms.Select(attrs={"class": "js-example-basic-single"}),
     )
 
     order_number = forms.CharField(

@@ -6,7 +6,7 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<!-- <style>
+<style>
     .card {
         margin-top: 20px;
     }
@@ -34,9 +34,12 @@
     }
 
     .select2-container[dir="rtl"] .select2-selection--single .select2-selection__rendered {
-        padding-top: 5px;
+        width: 100% !important;
     }
 
+    .select2-container {
+        width: 100% !important;
+    }
     .select2-selection__arrow {
         top: 5px !important;
     }
@@ -45,7 +48,10 @@
         background-color: #fff;
         border: 1px solid #ced4da;
         border-radius: .25rem;
-        height: calc(1.5em + .75rem + 5px);
+        height: 35px;
+        width: 100%;
+        text-align: center;
+        padding: 5px;
     }
 
     .select2-search__field {
@@ -65,7 +71,7 @@
     .input-group .input-group-text {
         border-radius: .25rem 0 0 .25rem !important
     }
-</style> -->
+</style>
 {% endblock %}
 
 {% block content %}

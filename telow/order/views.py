@@ -57,10 +57,7 @@ def OrderCreat(request):
                 # serialize model instance to have json format
                 data["flow"] = serializers.serialize("json", [data["flow"]])
                 data["assignE"] = serializers.serialize("json", [data["assignE"]])
-                
 
-                print(data["assignE"])
-                print(data["flow"])
                 data["delivery_date"] = data["delivery_date"].strftime("%Y/%m/%d")
 
                 # create order record on order table
@@ -75,7 +72,7 @@ def OrderCreat(request):
                     )
                     new_order.save()
                 except Exception as e:
-                    return JsonResponse({"Result": "BAD", "error": f"{e}"})
+                    return JsonResponse({"Result": "BAD, when creating new order", "error": f"{e}"})
                 # try to create order meta
                 try:
                     new_order_meta = order_meta(order_id=new_order, meta_value=data)

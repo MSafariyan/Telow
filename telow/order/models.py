@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from main_app.models.process_model import process, process_action
 from main_app.models.status_model import status
+from main_app.models.customer_model import customer
+
+
 # Create your models here.
 
 class order(models.Model):
@@ -17,7 +20,7 @@ class order(models.Model):
     ]
     
     order_title = models.CharField(max_length=100, unique=True)
-    customer_id = models.ForeignKey(get_user_model(), null=True, on_delete=models.PROTECT)
+    customer_id = models.ForeignKey(customer, null=True, on_delete=models.PROTECT)
     priority = models.CharField(max_length=11, choices=INDEED_PRIORITY, default="Low priority")
     process_id = models.ForeignKey(process, on_delete=models.SET_NULL, null=True)
     created_at  = models.DateTimeField(null=True, blank=True, auto_now_add=True)
