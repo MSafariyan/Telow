@@ -13,6 +13,7 @@ django-crispy-forms = "^1.13.0"
 django-jalali-date = "^1.0.0"
 python-dotenv = "^0.19.2"
 django-environ = "^0.8.1"
+python-environ = "^0.4.54"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
