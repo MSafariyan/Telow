@@ -1,0 +1,69 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% load jalali_tags %}
+{% load tags %}
+{% block content%} 
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">لیست مشتریان</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <a href='{% url "customer-add" %}' class="btn btn-lg btn-outline-success">اضافه کردن</a>
+        <a href='{% url "panel" %}' class="btn btn-lg btn-outline-secondary">داشبورد</a>
+      </div>
+    </div>
+  </div>
+  {% if messages %}
+  {% for message in messages %}
+      <div class="alert alert-{{message.extra_tags}} alert-dismissible fade show mt-4" role="alert" dir="rtl">
+          {{message}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+{% endif %}
+    <!-- Iterate over object_list -->
+    <div class="d-flex justify-content-md-between">
+        <table class="table text-center table-striped table-bordered" dir="rtl">
+            <thead class="thead-dark"> 
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">نام</th>
+                <th scope="col">شماره تماس همراه</th>
+                <th scope='col'>شماره تماس ثابت</th>
+                <th scope='col'>تاریخ عضویت</th>
+                <th scope='col'>تاریخ بروزرسانی</th>
+                <th scope="col">امکانات</th>
+            </tr>
+            </thead>
+            <tbody class="table-striped">
+        {% for object in coustomer_list %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ object.customer_name}} {{object.customer_family}}</td>
+                <td>{{ object.customer_mobile }}</td>
+                <td>{{ object.customer_phone }}</td>
+                <td>{{object.created_at|to_jalali:'%Y/%m/%d'}}</td>                
+                <td>{{object.updated_at|to_jalali:'%Y/%m/%d'}}</td>
+                <td>
+                    <a href='{% url "customer-update" object.pk %}' class="btn btn-primary">اصلاح</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </div>
+{% endblock %} 
+<ul>
+    <!-- Iterate over object_list -->
+    {% for object in object_list %}
+    <!-- Display Objects -->
+    <p>{{ object.pk }}</p>
+    <li>{{ object.name }}</li>
+    <li>{{ object.description }}</li>
+    <hr/>
+    <!-- If object_list is empty  -->
+    {% empty %}
+    <li>No objects yet.</li>
+    {% endfor %}
+</ul>

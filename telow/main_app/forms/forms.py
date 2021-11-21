@@ -114,3 +114,29 @@ class ProcessActionForm(forms.Form):
         label="روند فعال شود؟",
         widget=forms.CheckboxInput(attrs={'class':''})
     )
+    
+    
+class CustomerForm(forms.Form):
+    customer_name = forms.CharField(
+        required=True,
+        label="نام مشتری",
+        widget=forms.TextInput(attrs={'class':'form-control'})
+    )
+    
+    customer_family = forms.CharField(
+        required=True,
+        label="نام خانوادگی مشتری",
+        widget=forms.TextInput(attrs={'class':'form-control'})
+    )
+    
+    customer_mobile = forms.CharField(
+        required=True,
+        label="شماره موبایل",
+        widget=forms.TextInput(attrs={'class':'form-control', 'maxlength':'11'})
+    )
+    
+    customer_phone = forms.CharField(
+        required=True,
+        label="شماره تماس ثابت",
+        widget=forms.TextInput(attrs={'class':'form-control', 'maxlength':'11'})
+    )

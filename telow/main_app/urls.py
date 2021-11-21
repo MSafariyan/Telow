@@ -4,6 +4,7 @@ from main_app.views.action_view import *
 from main_app.views.status_view import *
 from main_app.views.process_view import *
 from main_app.views.department_view import *
+from main_app.views.customer_view import *
 from main_app.views.view import indexPanelView, logout_view
 from django.contrib.auth.decorators import login_required
 
@@ -103,17 +104,25 @@ urlpatterns = [
                     ),
                 ),
                 path(
-                    "department/",
+                    "customer/",
                     include(
                         [
-                            path("", 
-                                 DepartmentList, 
-                                 name="department-list"
+                            path("",
+                                 CustomerList,
+                                 name="customer-list"
                                  ),
+                            path("add/",
+                                 CustomerCreate,
+                                 name="customer-add"
+                                 ),
+                            path(
+                                "<pk>/update",
+                                CustomerUpdate,
+                                name="customer-update")  
                         ]
                     ),
                 ),
-            ]
+            ],
         ),
         name="dashboard"
     ),
