@@ -411,6 +411,10 @@ class OrderForm(forms.Form):
         label="پیوست فایل پوشش", widget=forms.FileInput(attrs={"class": "form-control"})
     )
 
+    part_cover_file = forms.FileField(
+        label="پیوست فایل پوشش سخت", widget=forms.FileInput(attrs={"class": "form-control"})
+    )
+    
     hotstamp_sample = forms.ChoiceField(
         choices=outsource_choices, label="نمونه هات اسمپت", widget=forms.RadioSelect()
     )
