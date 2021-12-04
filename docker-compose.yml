@@ -1,20 +1,9 @@
 services:
-  web:
+  app:
     build: .
-    environment:
-      MYENV: telow_instance
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - .:/code
-    
-  web_migrate:
-    extends:
-      service: web
-    command: python telow/manage.py migrate
-    volumes:
-      - ./telow/db:/src/local-db
-  web_run:
-    extends:
-      service: web
-    command: python telow/manage.py runserver 0.0.0.0:8000
+      - .:/code/
     ports:
       - "8000:8000"
+    restart: always
