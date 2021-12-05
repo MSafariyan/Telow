@@ -1,5 +1,6 @@
 {% extends "dashboard/base.html"%}
-
+{% load jalali_tags %}
+{% load tags %}
 {% block content %}
 <div class="container-fluid">
     <div class="row">
@@ -25,7 +26,7 @@
                         </div>
                         <div class="col-md-6" dir="rtl">
                             <p class="h5"><span class="h5 text-secondary">اخرین به روزرسانی روند:
-                            </span><span>{{process.updated_at|date:"m/d/Y"}}</span></p>
+                            </span><span>{{process.updated_at|to_jalali:'%Y/%m/%d - %H:%M'}}</span></p>
                         </div>
                     </div>
                 </div>

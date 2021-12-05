@@ -1,4 +1,6 @@
 {% extends "dashboard/base.html" %}
+{% load jalali_tags %}
+{% load tags %}
 {% block content%} 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="display-6">لیست سفارشات</h1>
@@ -38,7 +40,7 @@
                 <td>
                     <a href='{% url "order-detail" data.order.pk %}' class="btn btn-secondary">جزئیات</a>
                 </td>
-                <td>{{ data.order.created_at }}</td>
+                <td>{{ data.order.created_at|to_jalali:'%Y/%m/%d - %H:%M' }}</td>
             </tr>
         {% endfor %}
     </tbody>

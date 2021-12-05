@@ -4,6 +4,8 @@ from main_app.models.status_model import status
 from main_app.models.process_model import process
 from order.models import order_process_action
 from django.contrib.auth import get_user_model
+from django.core.validators import RegexValidator
+
 
 class ActionForm(forms.Form):
     """ 
@@ -118,25 +120,33 @@ class ProcessActionForm(forms.Form):
     
 class CustomerForm(forms.Form):
     customer_name = forms.CharField(
+        max_length=50,
         required=True,
         label="نام مشتری",
         widget=forms.TextInput(attrs={'class':'form-control'})
     )
     
     customer_family = forms.CharField(
+        max_length=50,
         required=True,
         label="نام خانوادگی مشتری",
         widget=forms.TextInput(attrs={'class':'form-control'})
     )
-    
+    numeric = RegexValidator(r'^[0-9+]', 'Only digit characters.')
     customer_mobile = forms.CharField(
         required=True,
+        max_length=11,
+        min_length=11,
+        validators=[numeric],
         label="شماره موبایل",
-        widget=forms.TextInput(attrs={'class':'form-control', 'maxlength':'11'})
+        widget=forms.TextInput(attrs={'class':'form-control', 'maxlength':'11', 'minlengh':'11', "pattern":"09(1[0-9]|3[1-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}", "placeholder":"شماره همراه باید با 09 شروع شود."})
     )
     
     customer_phone = forms.CharField(
         required=True,
+        max_length=11,
+        min_length=11,
         label="شماره تماس ثابت",
-        widget=forms.TextInput(attrs={'class':'form-control', 'maxlength':'11'})
+        validators=[numeric],
+        widget=forms.TextInput(attrs={'class':'form-control', 'maxlength':'11', 'minlengh':'11', "pattern":"^0[0-9]{2,}[0-9]{7,}$", "placeholder":"شماره ثابت باید با 0 شروع شود."})
     )

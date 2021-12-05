@@ -16,23 +16,6 @@
         border: 1px solid rgb(255, 234, 195)
     }
 
-    input:focus {
-        background-color: rgba(255, 166, 0, 0.329) !important;
-    }
-
-    input::-ms-fill {
-        background-color: rgba(255, 166, 0, 0.329) !important;
-    }
-
-    input::placeholder {
-        color: rgb(146, 96, 4) !important;
-    }
-
-    input:valid {
-        background-color: rgba(0, 128, 0, 0.418);
-        color: blackz2;
-    }
-
     .select2-container[dir="rtl"] .select2-selection--single .select2-selection__rendered {
         width: 100% !important;
     }
@@ -89,8 +72,8 @@
     <div class="container-fluid" dir="rtl">
         <div class="row justify-content-md-center mt-5 p-5 ">
             <div class="col-md-10 text-center">
-                <h2>order</h2>
-
+                <h2>فرم سفارش</h2>
+                <hr>
                 <form action="{% url 'order-creat' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="card text-right">
@@ -900,6 +883,7 @@
                         </div>
                     </div> 
                 <input type="submit" value="ثبت" class="btn btn-success btn-block mt-4">
+                <a href="{% url 'order-list'%}" ><input type="button" value="انصراف" class="btn btn-block btn-danger  mt-2"></a>
             </form>
             </div>
         </div>
@@ -923,8 +907,7 @@ $(document).ready(function () {
 <script>
     $('.hideChildren').next().hide()
     $('.hideChildren').click(function() {
-        console.log('hide');
-        $(this).next().slideToggle(400)
+        $(this).next().slideToggle(400);
     });
 </script>
 

@@ -10,56 +10,54 @@ class OrderForm(forms.Form):
     #  Just a fatty form to take orders.
 
     INDEED_PRIORITY = [
-        ("DO OR DIE", 'Do or die'),
-        ("Critical", 'Critical priority'),
-        ("High", 'High priority'),
-        ("Middle", 'Middle priority'),
-        ("Low", 'Low priority'),
-        
+        ("خیلی بالا", 'خیلی بالا'),
+        ("بالا", 'بالا'),
+        ("متوسط", 'متوسط'),
     ]
     
-    title = forms.CharField(
+    title = forms.CharField(required=True,
         label="عنوان سفارش", widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
-    priority = forms.ChoiceField(
+    priority = forms.ChoiceField(required=False,
         label="اولویت",
         choices=INDEED_PRIORITY,
         widget=forms.Select(attrs={'class':'js-example-basic-single'})
     )
     
-    flow = forms.ModelChoiceField(
-        required=True,
+    flow = forms.ModelChoiceField(required=True,
         queryset=process.objects.filter(isEnable=True).all(),
         label="روند",
         widget=forms.Select(attrs={"class": "js-example-basic-single"}),
     )
 
     delivery_date = JalaliDateField(# date format is  "yyyy-mm-dd"
-            widget=AdminJalaliDateWidget # optional, to use default datepicker
+            widget=AdminJalaliDateWidget, # optional, to use default datepicker
+	        required=True,
         )
 
     assignE = forms.ModelChoiceField(
-        required=False,
+        required=True,
         queryset=customer.objects.all(),
         label="مشتری",
         widget=forms.Select(attrs={"class": "js-example-basic-single"}),
     )
 
-    order_number = forms.CharField(
+    order_number = forms.CharField(required=False,
         label="شماره سفارش", widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
-    payment_type = forms.CharField(
+    payment_choices = [("نقدی","نقدی"), ("15 روزه","15 روزه"), ("30 روزه","30 روزه"), ("45 روزه","45 روزه"), ("90 روزه","90 روزه"), ("چک","چک")]
+    payment_type = forms.ChoiceField(required=False,
         label="شیوه تسویه",
-        widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "شیوه تسویه"}
-        ),
+        choices=payment_choices,
+        widget=forms.Select(attrs={'class':'js-example-basic-single'})
+
     )
 
     outsource_choices = [("دارد", "دارد"), ("ندارد", "ندارد")]
 
-    outsource = forms.ChoiceField(
+    outsource = forms.ChoiceField(required=False,
         choices=outsource_choices,
         label="برون سپاری",
         widget=forms.RadioSelect(attrs={"class": "", "style": "display: inline-block"}),
@@ -69,11 +67,11 @@ class OrderForm(forms.Form):
         label="مرحله عملیاتی:",
         required=False,
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "نام مرحله عملیاتی","required":'false'}
+            attrs={"class": "form-control", "placeholder": "نام مرحله عملیاتی"}
         ),
     )
 
-    final_circulation = forms.CharField(
+    final_circulation = forms.CharField(required=False,
         label="تیراژ نهایی",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "تیراژ نهایی"}
@@ -82,19 +80,19 @@ class OrderForm(forms.Form):
 
     circulation_type_choices = [("عدد", "عدد"), ("جلد", "جلد"), ("شیت", "شیت")]
 
-    final_circulation_type = forms.ChoiceField(
+    final_circulation_type = forms.ChoiceField(required=False,
         choices=circulation_type_choices,
         label="",
         widget=forms.RadioSelect(),
     )
 
-    layers = forms.CharField(
+    layers = forms.CharField(required=False,
         label="تعداد لایه",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "تعداد لایه‌ها"}
         ),
     )
-    layer_circulation = forms.CharField(
+    layer_circulation = forms.CharField(required=False,
         label="تیراژ لایه‌ها",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "تیراژ لایه‌ها"}
@@ -103,13 +101,14 @@ class OrderForm(forms.Form):
 
     paper_supplier_choices = [("شرکت", "شرکت"), ("مشتری", "مشتری")]
 
-    paper_supplier = forms.ChoiceField(
+    paper_supplier = forms.ChoiceField(required=False,
         choices=paper_supplier_choices,
         label="تامین کننده کاغذ",
         widget=forms.RadioSelect(),
     )
 
     paper_type = forms.CharField(
+        required=False,
         label="نوع کاغذ",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "نوع کاغذ/مقوا"}
@@ -117,26 +116,31 @@ class OrderForm(forms.Form):
     )
 
     paper_weigth = forms.CharField(
+	required=False,
         label="گرماژ",
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "گرماژ"}),
     )
 
     paper_brand = forms.CharField(
+	required=False,
         label="برند کاغذ", widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
     unknowOption_choices = [("SG", "SG"), ("LG", "LG")]
     unknowOption = forms.ChoiceField(
+	required=False,
         choices=unknowOption_choices, label="", widget=forms.RadioSelect(attrs={})
     )
 
     paper_legit_size = forms.CharField(
+	required=False,
         label="ابعاد اصلی کاغذ(سانتی متر)",
         widget=forms.TextInput(
             attrs={"class": "form-control", "dir": "ltr", "placeholder": "20*30"}
         ),
     )
     paper_work_size = forms.CharField(
+	required=False,
         label="ابعاد کار کاغذ(سانتی متر)",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "20*30", "dir": "ltr"}
@@ -144,6 +148,7 @@ class OrderForm(forms.Form):
     )
 
     paper_amount = forms.CharField(
+	required=False,
         label="تعداد کل کاغذ‌ها",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "کل کاغذها"}
@@ -151,6 +156,7 @@ class OrderForm(forms.Form):
     )
 
     paper_waste_amount = forms.CharField(
+	required=False,
         label="تعداد کاغذ‌های باطله",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "کاغذ باطله"}
@@ -158,6 +164,7 @@ class OrderForm(forms.Form):
     )
 
     paper_used_amount = forms.CharField(
+	required=False,
         label="تعداد کاغذ مفید",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "کاغذهای مفید"}
@@ -165,6 +172,7 @@ class OrderForm(forms.Form):
     )
 
     papaer_self_provide = forms.CharField(
+	required=False,
         label="تعداد کاغذ تامین شده توسط شرکت",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "توسط شرکت"}
@@ -172,6 +180,7 @@ class OrderForm(forms.Form):
     )
 
     paper_customer_provide = forms.CharField(
+	required=False,
         label="تعداد کاغذ تامین شده توسط مشتری",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "توسط مشتری"}
@@ -180,12 +189,14 @@ class OrderForm(forms.Form):
 
     print_plate_provider_choices = [("شرکت", "شرکت"), ("مشتری", "مشتری"), ("آرشیو", "آرشیو")]
     print_plate_provider = forms.ChoiceField(
+	required=False,
         choices=print_plate_provider_choices,
         label="تامین کننده زینک",
         widget=forms.RadioSelect(),
     )
 
     print_plate_amount = forms.CharField(
+	required=False,
         label="تعداد زینک",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "تعداد زینک"}
@@ -193,11 +204,13 @@ class OrderForm(forms.Form):
     )
 
     print_plate_burn = forms.BooleanField(
+	required=False,
         label="زینک سوزی",
         initial=False,
     )
 
     ordering_on_print_plate = forms.CharField(
+	required=False,
         label="تعداد چیدمان در هر زینک",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "تعداد چیدمان در هر زینک"}
@@ -205,10 +218,12 @@ class OrderForm(forms.Form):
     )
 
     print_plate_file = forms.FileField(
+	required=False,
         label="آدرس فایل زینک", widget=forms.FileInput(attrs={"class": "form-control"})
     )
 
     paper_size_before_cut = forms.CharField(
+	required=False,
         label="ابعاد اولیه کاغذ (سانتی متر)",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "21*20", "dir": "ltr"}
@@ -216,11 +231,13 @@ class OrderForm(forms.Form):
     )
 
     paper_amount_recived = forms.CharField(
+	required=False,
         label="تعداد کاغذهای دریافتی از انبار",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
 
     paper_work_size_after_cut = forms.CharField(
+	required=False,
         label="ابعاد پس از برش کاغذ (سانتی متر)",
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "20*20", "dir": "ltr"}
@@ -228,16 +245,19 @@ class OrderForm(forms.Form):
     )
 
     paper_amount_after_cut = forms.CharField(
+	required=False,
         label="تعداد کاغذها بعد از برش",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
 
     return_wasted_paper = forms.BooleanField(
+	required=False,
         label="کناره گیری کاغذ تحویل مشتری گردد",
         initial=False,
     )
 
     lito_discription = forms.CharField(
+	required=False,
         label="توضیحات",
         widget=forms.Textarea(
             attrs={"class": "form-control", "placeholder": "توضیحات...", "rows": "2"}
@@ -247,19 +267,23 @@ class OrderForm(forms.Form):
     outsource_choices = [("دارد", "دارد"), ("ندارد", "ندارد")]
 
     superviser = forms.ChoiceField(
+	required=False,
         choices=outsource_choices, label="ناظر", widget=forms.RadioSelect()
     )
 
     sample_view = forms.ChoiceField(
+	required=False,
         choices=outsource_choices, label="نمونه شاهد", widget=forms.RadioSelect()
     )
 
     qc = forms.BooleanField(
+	required=False,
         label="تصدیق چاپ توس QC",
         initial=False,
     )
 
     color_pallet_range = forms.CharField(
+	required=False,
         label="تعداد رنگ", widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
@@ -271,16 +295,19 @@ class OrderForm(forms.Form):
     ]
 
     color_pallet = forms.MultipleChoiceField(
+	required=False,
         label="تعداد رنگ",
         choices=color_pallet_choices,
         widget=forms.CheckboxSelectMultiple(attrs={"class": ""}),
     )
 
     spot_colors = forms.CharField(
+	required=False,
         label="رنگ‌های Spot:", widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
     pantone_colors = forms.CharField(
+	required=False,
         label="رنگ‌های Pantone:",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
@@ -295,6 +322,7 @@ class OrderForm(forms.Form):
     ]
 
     parallel_cover = forms.ChoiceField(
+	required=False,
         label="پوشش همزمان",
         choices=parallel_cover_choices,
         widget=forms.RadioSelect(attrs={"class": ""}),
@@ -308,25 +336,30 @@ class OrderForm(forms.Form):
     ]
 
     print_option = forms.ChoiceField(
+	required=False,
         label="چاپ",
         choices=print_option_choices,
         widget=forms.RadioSelect(attrs={"class": ""}),
     )
 
     print_machines_count = forms.CharField(
+	required=False,
         label="تعداد دستگاه", widget=forms.TextInput(attrs={"class": "form-control"})
     )
     
     forms_count = forms.CharField(
+	required=False,
         label="تعداد فرم", widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
     print_graphhical_file = forms.FileField(
+	required=False,
         label="پیوست فایل گرافیکی",
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
 
     print_discription = forms.CharField(
+	required=False,
         label="توضیحات",
         widget=forms.Textarea(
             attrs={"class": "form-control", "placeholder": "توضیحات...", "rows": "0"}
@@ -345,9 +378,10 @@ class OrderForm(forms.Form):
         ("یووی سیلندریک", "یووی سیلندریک"),
     ]
     flat_cover = forms.MultipleChoiceField(
+	required=False,
         label="پوشش سخت",
         choices=flat_cover_choices,
-        widget=forms.CheckboxSelectMultiple(attrs={"class": ""}),
+        widget=forms.CheckboxSelectMultiple(),
     )
 
     flat_cover_detail_choices = [
@@ -356,12 +390,14 @@ class OrderForm(forms.Form):
     ]
 
     flat_cover_detail = forms.MultipleChoiceField(
+	required=False,
         label="پوشش سخت",
         choices=flat_cover_detail_choices,
-        widget=forms.CheckboxSelectMultiple(attrs={"class": ""}),
+        widget=forms.CheckboxSelectMultiple(),
     )
 
     flat_cover_file = forms.FileField(
+	required=False,
         label="پیوست فایل پوشش", widget=forms.FileInput(attrs={"class": "form-control"})
     )
 
@@ -377,12 +413,14 @@ class OrderForm(forms.Form):
     ]
 
     plastic_covers = forms.MultipleChoiceField(
+	required=False,
         label="",
         choices=plastic_covers_choices,
-        widget=forms.CheckboxSelectMultiple(attrs={"class": ""}),
+        widget=forms.CheckboxSelectMultiple(),
     )
 
     plastic_discription = forms.CharField(
+	required=False,
         label="توضیحات",
         widget=forms.Textarea(
             attrs={"class": "form-control", "placeholder": "توضیحات...", "rows": "0"}
@@ -395,12 +433,14 @@ class OrderForm(forms.Form):
     ]
 
     part_cover = forms.MultipleChoiceField(
+	required=False,
         label="پوشش موضعی",
         choices=part_cover_choices,
         widget=forms.CheckboxSelectMultiple(),
     )
 
     part_cover_description = forms.CharField(
+	required=False,
         label="توضیحات",
         widget=forms.Textarea(
             attrs={"class": "form-control", "placeholder": "توضیحات...", "rows": "0"}
@@ -408,28 +448,34 @@ class OrderForm(forms.Form):
     )
 
     flat_cover_file = forms.FileField(
+	required=False,
         label="پیوست فایل پوشش", widget=forms.FileInput(attrs={"class": "form-control"})
     )
 
     part_cover_file = forms.FileField(
+	required=False,
         label="پیوست فایل پوشش سخت", widget=forms.FileInput(attrs={"class": "form-control"})
     )
     
     hotstamp_sample = forms.ChoiceField(
+	required=False,
         choices=outsource_choices, label="نمونه هات اسمپت", widget=forms.RadioSelect()
     )
 
     hotstamp_foil_color = forms.CharField(
+	required=False,
         label="رنگ فویل", widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
     hotstamp_file = forms.FileField(
+	required=False,
         label="پیوست فایل هات استمپ",
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
 
     cliche_type_choices = [("babesti", "بابستی"), ("letter presi", "لترپرسی")]
     cliche_type = forms.ChoiceField(
+	required=False,
         choices=cliche_type_choices, label="نوع کلیشه", widget=forms.RadioSelect()
     )
 
@@ -439,10 +485,12 @@ class OrderForm(forms.Form):
         ("استفاده از کلیشه آرشیوی", "استفاده از کلیشه آرشیوی"),
     ]
     cliche_provider = forms.ChoiceField(
+	required=False,
         choices=cliche_provider_choices, label="", widget=forms.RadioSelect()
     )
 
     hotstamp_description = forms.CharField(
+	required=False,
         label="توضیحات", widget=forms.Textarea(attrs={"class": "form-control"})
     )
 
@@ -452,20 +500,24 @@ class OrderForm(forms.Form):
         ("با پوشال تحویل مشتری گردد", "با پوشال تحویل مشتری گردد"),
     ]
     sheild = forms.ChoiceField(
+	required=False,
         choices=sheild_choices, label="پوشال", widget=forms.RadioSelect()
     )
 
     window_sticking_choices = [("نایلون", "نایلون"), ("طلق", "طلق")]
     window_sticking = forms.ChoiceField(
+	required=False,
         choices=window_sticking_choices,
         label="پنجره چسبانی",
         widget=forms.RadioSelect(),
     )
 
     window_width = forms.CharField(
+	required=False,
         label="عرض نایلون/طلق", widget=forms.TextInput(attrs={"class": "form-control"})
     )
     window_thickness = forms.CharField(
+	required=False,
         label="ضخامت نایلون/طلق",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
@@ -490,16 +542,19 @@ class OrderForm(forms.Form):
     ]
 
     box_sticking = forms.MultipleChoiceField(
+	required=False,
         choices=box_sticking_choices,
         label="جعبه چسبانی",
         widget=forms.CheckboxSelectMultiple(),
     )
 
     bindray_cut = forms.ChoiceField(
+	required=False,
         choices=outsource_choices, label="برش", widget=forms.RadioSelect()
     )
 
     bindray_size = forms.CharField(
+	required=False,
         label="ابعاد نهایی برش(سانتی متر)",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
@@ -517,6 +572,7 @@ class OrderForm(forms.Form):
     ]
 
     bindray_detail = forms.MultipleChoiceField(
+	required=False,
         choices=bindray_detail_choices,
         label="صحافی",
         widget=forms.CheckboxSelectMultiple(),
@@ -539,6 +595,7 @@ class OrderForm(forms.Form):
     ]
 
     bindary_cover = forms.MultipleChoiceField(
+	required=False,
         choices=bindray_cover_choices,
         label="جلد صحافی",
         widget=forms.CheckboxSelectMultiple,
@@ -551,21 +608,25 @@ class OrderForm(forms.Form):
     ]
 
     bindary_cover2 = forms.MultipleChoiceField(
+	required=False,
         choices=bindray_cover2_choices,
         label="جلد صحافی",
         widget=forms.CheckboxSelectMultiple(),
     )
     bindray_serial = forms.BooleanField(
+	required=False,
         label="سریال",
         initial=False,
     )
     bindray_serial_number_start = forms.CharField(
+	required=False,
         label="شروع سریال",
         widget=forms.TextInput(
             attrs={"class": " form-control", "placeholder": "شروع سریال"}
         ),
     )
     bindray_serial_number_end = forms.CharField(
+	required=False,
         label="پایان سریال",
         widget=forms.TextInput(
             attrs={"class": " form-control", "placeholder": "پایان سریال‌"}
@@ -573,10 +634,12 @@ class OrderForm(forms.Form):
     )
 
     bindary_order = forms.CharField(
+	required=False,
         label="ترتیب نسخه‌ها", widget=forms.TextInput(attrs={"class": " form-control"})
     )
 
     bindary_description = forms.CharField(
+	required=False,
         label="توضیحات",
         widget=forms.Textarea(
             attrs={"class": "form-control", "placeholder": "توضیحات...", "rows": "0"}
@@ -591,12 +654,14 @@ class OrderForm(forms.Form):
     ]
 
     customize = forms.MultipleChoiceField(
+	required=False,
         choices=customize_choices,
         label="شخصی سازی",
         widget=forms.CheckboxSelectMultiple()
     )
 
     pin_code = forms.CharField(
+	required=False,
         label="نحوه تحویل پین/کد/شماره سریال",
         widget=forms.TextInput(attrs={"class": " form-control"}),
     )
@@ -608,32 +673,38 @@ class OrderForm(forms.Form):
     ]
 
     send_type = forms.MultipleChoiceField(
+	required=False,
         choices=send_type_choices,
         label="نحوه ارسال به مشتری",
         widget=forms.CheckboxSelectMultiple()
     )
 
     shiring_amount = forms.CharField(
+	required=False,
         label="شیرینگ در تعداد",
         widget=forms.TextInput(attrs={"class": " form-control"}),
     )
 
     lafaf_amount = forms.CharField(
+	required=False,
         label="لفاف در تعداد", widget=forms.TextInput(attrs={"class": " form-control"})
     )
 
     bandinak_amount = forms.CharField(
+	required=False,
         label="بندینک در تعداد",
         widget=forms.TextInput(attrs={"class": " form-control"}),
     )
 
 
     box_amount = forms.CharField(
+	required=False,
         label="تعداد در کارتن",
         widget=forms.TextInput(attrs={"class": " form-control"}),
     )
     
     basket_amount = forms.CharField(
+	required=False,
         label="تعداد در سبد",
         widget=forms.TextInput(attrs={"class": " form-control"}),
     )
@@ -641,6 +712,7 @@ class OrderForm(forms.Form):
     packing_provider_choices = [("شرکت", "شرکت"), ("مشتری", "مشتری")]
 
     packing_provider = forms.ChoiceField(
+	required=False,
         choices=packing_provider_choices,
         label="تامین کننده کارتن",
         widget=forms.RadioSelect()
@@ -653,21 +725,25 @@ class OrderForm(forms.Form):
     ]
 
     packing_type = forms.ChoiceField(
+	required=False,
         choices=packing_type_choices,
         label="کارتن",
         widget=forms.RadioSelect()
     )
 
     packing_description = forms.CharField(
+	required=False,
         label="توضیحات", widget=forms.Textarea(attrs={"class": "form-control", "placeholder": "توضیحات...", "rows": "0"})
     )
 
     basket = forms.BooleanField(
+	required=False,
         label="سبد",
         initial=False,
     )
 
     plastic = forms.BooleanField(
+	required=False,
         label="نایلون",
         initial=False,
     )
@@ -675,12 +751,14 @@ class OrderForm(forms.Form):
     basket_provider_choices = [("شرکت", "شرکت"), ("مشتری", "مشتری")]
 
     basket_provider = forms.ChoiceField(
+	required=False,
         choices=basket_provider_choices,
         label="تامین کننده سبد",
         widget=forms.RadioSelect()
     )
 
     basket_description = forms.CharField(
+	required=False,
         label="توضیحات", widget=forms.Textarea( attrs={"class": "form-control", "placeholder": "توضیحات...", "rows": "0"})
     )
 
@@ -691,6 +769,7 @@ class OrderForm(forms.Form):
     ]
 
     basket_type = forms.MultipleChoiceField(
+	required=False,
         choices=basket_type_choices,
         label="حمل و نقل",
         widget=forms.CheckboxSelectMultiple()
@@ -703,16 +782,19 @@ class OrderForm(forms.Form):
     ]
 
     label_type = forms.ChoiceField(
+	required=False,
         choices=label_type_choise,
         label="لیبل",
         widget=forms.RadioSelect()
     )
 
     label_detail = forms.CharField(
+	required=False,
         label="موارد مندرج در لیبل اختصاصی",
         widget=forms.TextInput(attrs={"class": " form-control"}),
     )
 
     other_description = forms.CharField(
+	required=False,
         label="دیگر توضیحات", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "توضیحات...", "rows": "0"})
     )

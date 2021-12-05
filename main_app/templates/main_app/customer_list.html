@@ -33,6 +33,7 @@
                 <th scope='col'>شماره تماس ثابت</th>
                 <th scope='col'>تاریخ عضویت</th>
                 <th scope='col'>تاریخ بروزرسانی</th>
+                <th scope="col">ثبت نام کننده</th>
                 <th scope="col">امکانات</th>
             </tr>
             </thead>
@@ -43,8 +44,9 @@
                 <td>{{ object.customer_name}} {{object.customer_family}}</td>
                 <td>{{ object.customer_mobile }}</td>
                 <td>{{ object.customer_phone }}</td>
-                <td>{{object.created_at|to_jalali:'%Y/%m/%d'}}</td>                
-                <td>{{object.updated_at|to_jalali:'%Y/%m/%d'}}</td>
+                <td>{{object.created_at|to_jalali:'%Y/%m/%d - %H:%M'}}</td>                
+                <td>{{object.updated_at|to_jalali:'%Y/%m/%d - %H:%M'}}</td>
+                <td>{{object.operator}}</td>
                 <td>
                     <a href='{% url "customer-update" object.pk %}' class="btn btn-primary">اصلاح</a>
                 </td>

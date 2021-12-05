@@ -18,12 +18,12 @@
         <h2 class="text-center">به روزرسانی روند "{{obj.process_name}}"</h2>
         <form method="POST" enctype="multipart/form-data" class="border p-5 rounded border-primary "
             action="{% url 'process-update' obj.pk%}">
-
             <!-- Security token -->
             {% csrf_token %}
 
             {{form.as_p}}
             <input type="submit" value="به روزرسانی" class="btn btn-success btn-block mt-4">
+            <a href="{% url 'process-list'%}" ><input type="button" value="انصراف" class="btn btn-block btn-danger  mt-2"></a>
         </form>
     </div>
 </div>

@@ -31,7 +31,7 @@ def CustomerCreate(request):
         if request.method == "POST":
             form = CustomerForm(request.POST)
             if form.is_valid():
-                new_customer = customer(customer_name=form.cleaned_data['customer_name'], customer_family=form.cleaned_data['customer_family'], customer_mobile=form.cleaned_data['customer_mobile'], customer_phone=form.cleaned_data['customer_phone'])
+                new_customer = customer(operator=request.user,customer_name=form.cleaned_data['customer_name'], customer_family=form.cleaned_data['customer_family'], customer_mobile=form.cleaned_data['customer_mobile'], customer_phone=form.cleaned_data['customer_phone'],)
                 new_customer.save()
                 
                 messages.add_message(request, messages.SUCCESS, "مشتری جدید با موفقیت ایجاد شد :)", extra_tags='success')

@@ -13,6 +13,8 @@ from django.views import View
 from ..models.action_model import Action, auth_user_action
 from main_app.forms.forms import ActionForm
 from main_app.models.process_model import process_action
+from django.contrib import messages
+
 # Create your views here.
 
 
@@ -105,12 +107,10 @@ class ActionDelete(DeleteView):
 @login_required()
 def ActionCreate(request):
     if request.user.has_perm('main_app.create_action'):
-
         from main_app.models.action_model import auth_user_action
         if request.method == "GET":
             form = ActionForm()
             return render(request, "main_app/action_form.html", {"form": form})
-        
         if request.method == "POST":
             form = ActionForm(request.POST)
             if form.is_valid():
@@ -135,7 +135,12 @@ def ActionCreate(request):
                     new_auth_user_action = auth_user_action(user_id=user, action_id=new_action)
                     new_auth_user_action.save()
                 form = ActionForm()
-                message = "وظیفه جدید ساخته شد"
-                return render(request, "main_app/action_form.html", {"form":form,'message':message, "status":"success"})
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    "وظیفه جدید ساخته شد",
+                    extra_tags="success",
+                )
+                return redirect("action-list")
     else:
         return redirect('index')    

@@ -1,4 +1,6 @@
 {% extends "dashboard/base.html" %}
+{% load jalali_tags %}
+{% load tags %}
 {% block content%} 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">لیست وضعیت‌ها</h1>
@@ -31,7 +33,7 @@
                     <a href='{% url "status-delete" object.pk %}' class="btn btn-danger">حدف</a>
                     <a href='{% url "status-update" object.pk %}' class="btn btn-primary">اصلاح</a>
                 </td>
-                <td>{{ object.updated_at }}</td>
+                <td>{{ object.updated_at|to_jalali:'%Y/%m/%d - %H:%M' }}</td>
             </tr>
         {% endfor %}
     </tbody>

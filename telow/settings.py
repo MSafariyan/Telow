@@ -29,7 +29,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost", "192.168.1.108"]
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "192.168.80.150"]
 
 LOGIN_URL = "/admin/login/"
 
@@ -141,7 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
