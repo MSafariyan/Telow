@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -6,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from order.models import order, order_process_action
 from main_app.models.process_model import process
 from main_app.models.action_model import auth_user_action
+from django.conf.urls import handler404
 
 @login_required
 def indexPanelView(request):
@@ -21,3 +23,10 @@ def indexPanelView(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+from django.core.exceptions import PermissionDenied
+
+def handler404(request, exception):
+    return render(request, 'main_app/404.html')
+
+def handler500(request, exception):
+    return render(request, 'main_app/500.html')

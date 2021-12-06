@@ -128,3 +128,6 @@ urlpatterns = [
     ),
     path("logout/", logout_view, name="logout"),
 ]
+
+handler404="main_app.views.view.handler404"
+handler404="main_app.views.view.handler500"

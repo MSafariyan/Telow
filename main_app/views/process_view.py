@@ -12,10 +12,10 @@ from django.http import HttpResponse
 from django.views import View
 from main_app.models.process_model import process, process_action
 from main_app.models.status_model import status
-
 from main_app.forms.forms import ProcessActionForm
 from django.db import IntegrityError
 from order.models import order, order_process_action
+from django.contrib import messages
 
 process_success_url = "/dashboard/process/"
 
@@ -35,7 +35,6 @@ def ProcessDetail(request, pk):
     if request.user.has_perm('main_app.view_proccess'):
         current_process = process.objects.get(pk=pk)
         related_process_actions = process_action.objects.filter(process_id=current_process).all()
-        print(related_process_actions)
         return render(request, "main_app/process_detail.html", {"process":current_process, "process_action":related_process_actions})
     else:
         return redirect('index')
@@ -49,7 +48,6 @@ def ProcessUpdate(request, pk):
             all_process_action = process_action.objects.filter(
                 process_id=current_process
             ).all()
-            print(all_process_action)
             data = {
                 "name": current_process.process_name,
                 "description": current_process.process_description,
@@ -95,8 +93,6 @@ def ProcessUpdate(request, pk):
                 all_process_action = process_action.objects.filter(
                     process_id=process_instance
                 ).all()
-                print(actions)
-                
                 # all related actions to current process
                 actions = process_action.objects.filter(process_id=process_instance).all()
                 # get all orders related to current process
@@ -151,7 +147,6 @@ def ProcessCreate(request):
     if request.user.has_perm('main_app.create_process'):
         if request.method == "GET":
             form = ProcessActionForm
-
             return render(request, "main_app/process_form.html", {"form": form})
         if request.method == "POST":
             form = ProcessActionForm(request.POST)
@@ -187,12 +182,13 @@ def ProcessCreate(request):
                     )
                     new_process_action.save()
                 form = ProcessActionForm
-                message = "روند جدید ساخته شد"
-                return render(
+                messages.add_message(
                     request,
-                    "main_app/process_form.html",
-                    {"form": form, "message": message, "status": "success"},
+                    messages.SUCCESS,
+                    "روند جدید ساخته شد",
+                    extra_tags="success",
                 )
+                return redirect('process-list')
             else:
                 return HttpResponse(form.errors)
     else:

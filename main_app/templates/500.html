@@ -1,0 +1,27 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block head %}
+<title>500 Error</title>
+{{ block.super }}
+<meta http-equiv="refresh" content="5; url=/" />
+
+{% endblock %}
+
+{% block content%} 
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">لیست روندها</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <a href='{% url "process-add" %}' class="btn btn-lg btn-outline-success">اضافه کردن</a>
+        <a href='{% url "panel" %}' class="btn btn-lg btn-outline-secondary">داشبورد</a>
+      </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 offset-md-3 text-center" style="border: solid 5px!important;border-radius: 100px;">
+        <img src="https://www.pngmart.com/files/21/500-PNG-File.png" class="" alt="404">
+        <h1 class="mt-4">مشکلی پیش امده</h1>
+        <p>ممکن است مشکل از عملیات دیتابیس یا درخواست غیر اصولی از کاربر باشد.</p>
+    </div>
+</div>
+{% endblock %} 
