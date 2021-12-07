@@ -103,7 +103,7 @@
 
             </div>
         </div>
-        {% if perms.main_app.Can_view_paper%}
+        {% if perms.order.Can_view_paper%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">کاغذ/مقوا</h5>
             <div class="card-body text-center">
@@ -165,7 +165,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_litography%}
+        {% if perms.order.Can_view_litography%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">لیتوگرافی</h5>
             <div class="card-body text-center">
@@ -207,7 +207,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_befor_cut%}
+        {% if perms.order.Can_view_befor_cut%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light">برش قبل از چاپ</h5>
             <div class="card-body text-center">
@@ -243,7 +243,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_print%}
+        {% if perms.order.Can_view_print%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light">چاپ</h5>
             <div class="card-body text-center">
@@ -325,7 +325,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_hard_cover%}
+        {% if perms.order.Can_view_hard_cover%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light  ">پوشش تخت</h5>
             <div class="card-body text-center">
@@ -361,7 +361,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_plastic_cover%}
+        {% if perms.order.Can_view_plastic_cover%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">سلفون</h5>
             <div class="card-body text-center">
@@ -381,7 +381,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_part_cover%}
+        {% if perms.order.Can_view_part_cover%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">پوشش موضعی</h5>
             <div class="card-body text-center">
@@ -409,7 +409,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_hotstamp%}
+        {% if perms.order.Can_view_hotstamp%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">هات استمپ</h5>
             <div class="card-body text-center">
@@ -454,7 +454,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_shield%}
+        {% if perms.order.Can_view_shield%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">پوشال</h5>
             <div class="card-body text-center">
@@ -468,7 +468,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_window_sticking%}
+        {% if perms.order.Can_view_window_sticking%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">پنجره چسبانی</h5>
             <div class="card-body text-center">
@@ -490,7 +490,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_box_sticking%}
+        {% if perms.order.Can_view_box_sticking%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">جعبه چسبانی</h5>
             <div class="card-body text-center">
@@ -506,7 +506,7 @@
             </div>
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_bindray%}
+        {% if perms.order.Can_view_bindray%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">صحافی</h5>
             <div class="card-body text-center">
@@ -572,7 +572,7 @@
 
         </div>
         {% endif %}
-        {% if perms.main_app.Can_view_customize%}
+        {% if perms.order.Can_view_customize%}
         <div class="card text-center">
             <h5 class="card-header bg-dark text-light ">شخصی سازی</h5>
             <div class="card-body text-center">
@@ -707,29 +707,29 @@
             </thead>
             <tbody>
                 {% for action in actions %}
-                {% with previous_element=actions|previous:forloop.counter0 %}
-                {% if previous_element.status == finished or forloop.first %}
-                {% if action in UserActions%}
-                <tr style="border-right: 3px solid blue;" class="rounded">
-                    <th scope="row">{{forloop.counter}}</th>
-                    <td>{{action.process_action}}</td>
-                    <td><span class="border p-2 rounded"
-                            style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
-                    <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
-                </tr>
-                {% endif %}
-                {% else %}
-                {% if action in UserActions%}
-                <tr style="border-right: 3px solid blue;" class="rounded">
-                    <th scope="row">{{forloop.counter}}</th>
-                    <td>{{action.process_action}}</td>
-                    <td><span class="border p-2 rounded"
-                            style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
-                    <td>وضعیت عملیات قبلی به {{previous_element.status}} تغییر یافته است</td>
-                </tr>
-                {% endif %}
-                {% endif %}
-                {% endwith %}
+                    {% with previous_element=actions|previous:forloop.counter0 %}
+                        {% if previous_element.status == finished or forloop.first %}
+                            {% if action in UserActions%}
+                            <tr style="border-right: 3px solid blue;" class="rounded">
+                                <th scope="row">{{forloop.counter}}</th>
+                                <td>{{action.process_action}}</td>
+                                <td><span class="border p-2 rounded"
+                                        style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
+                            </tr>
+                            {% endif %}
+                            {% else %}
+                            {% if action in UserActions%}
+                            <tr style="border-right: 3px solid blue;" class="rounded">
+                                <th scope="row">{{forloop.counter}}</th>
+                                <td>{{action.process_action}}</td>
+                                <td><span class="border p-2 rounded"
+                                        style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                                <td>وضعیت عملیات قبلی به {{previous_element.status}} تغییر یافته است</td>
+                            </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endwith %}
                 {% endfor%}
             </tbody>
         </table>

@@ -29,9 +29,9 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost", "192.168.80.150"]
+ALLOWED_HOSTS = ["*"]
 
 LOGIN_URL = "/admin/login/"
 

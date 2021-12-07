@@ -126,7 +126,7 @@ def OrderDetail(request, pk):
         .filter(order_id=order_id)
         .all()
     )
-    actions = order_process_action.objects.filter(order_id=current_order).all()
+    actions = order_process_action.objects.filter(order_id=current_order).order_by("id").all()
     meta = order_meta.objects.filter(order_id=order_id).only("meta_value").get()
     users = json.loads(meta.meta_value["assignE"])
     meta.meta_value["assignE"] = users
