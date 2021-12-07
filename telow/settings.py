@@ -12,19 +12,21 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import environ
+from dotenv import load_dotenv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
-environ.Env.read_env()
+load_dotenv()       
+
+# env = environ.Env()
+# environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -83,8 +85,12 @@ WSGI_APPLICATION = 'telow.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db" /'db.sqlite3',
+        'ENGINE':   os.getenv('POSTGRES_ENGIN'),
+        'NAME':     os.getenv('POSTGRES_NAME'),
+        'USER':     os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST':     "db",
+        'PORT':     5432
     }
 }
 
@@ -94,7 +100,7 @@ DATABASES = {
 # default settings
 JALALI_DATE_DEFAULTS = {
    'Strftime': {
-        'date': '%y/%m/%d',
+        'date':     '%y/%m/%d',
         'datetime': '%H:%M:%S _ %y/%m/%d',
     },
     'Static': {
@@ -141,13 +147,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Tehran'
+TIME_ZONE     = 'Asia/Tehran'
 
-USE_I18N = True
+USE_I18N      = True
 
-USE_L10N = True
+USE_L10N      = True
 
-USE_TZ = True
+USE_TZ        = True
 
 
 # Static files (CSS, JavaScript, Images)
