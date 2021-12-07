@@ -1,3 +1,4 @@
+from django.contrib.auth import models
 from django.views.generic import (
     ListView,
     DetailView,
@@ -14,8 +15,10 @@ from main_app.models.process_model import process, process_action
 from main_app.models.status_model import status
 from main_app.forms.forms import ProcessActionForm
 from django.db import IntegrityError
+from django.db.models import ProtectedError
 from order.models import order, order_process_action
 from django.contrib import messages
+
 
 process_success_url = "/dashboard/process/"
 
@@ -118,19 +121,24 @@ def ProcessUpdate(request, pk):
                     "actions": all_process_action.values_list("action", flat=True),
                 }
                 form = ProcessActionForm(initial=data)
-                message = "روند به روزرسانی شد"
-
-                # update related orders
-                return render(
+                messages.add_message(
                     request,
-                    "main_app/process_form_update.html",
-                    {
-                        "form": form,
-                        "message": message,
-                        "status": "success",
-                        "obj": process_instance,
-                    },
+                    messages.SUCCESS,
+                    f"{process_instance.process_name} به روز شد.",
+                    extra_tags="success",
                 )
+                return redirect('process-list')
+                # update related orders
+                # return render(
+                #     request,
+                #     "main_app/process_form_update.html",
+                #     {
+                #         "form": form,
+                #         "message": message,
+                #         "status": "success",
+                #         "obj": process_instance,
+                #     },
+                # )
     else:
         return redirect('index')
 
@@ -138,6 +146,7 @@ def ProcessUpdate(request, pk):
 @method_decorator(login_required, name="dispatch")
 class ProcessDelete(DeleteView):
     model = process
+    success_url = process_success_url
     title = "حذف روند"
     def dispatch(self, *args, **kwargs):
         if not (
@@ -151,6 +160,27 @@ class ProcessDelete(DeleteView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.title
         return context
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.success_url = self.get_success_url()
+        try:
+            self.object.delete()
+        except ProtectedError as e:
+            messages.add_message(
+                    request,
+                    messages.ERROR,
+                    f"روند {self.object.process_name} دارای وظایف مرتبط است و امکان حذف آن وجود ندارد.",
+                    extra_tags="Danger",
+                )
+            messages.add_message(
+                    request,
+                    messages.WARNING,
+                    f'برای حذف روند "{self.object.process_name}"  ابتدا وظایف مرتبط را پاکسازی کنید',
+                    extra_tags="warning",
+                )
+            return redirect('process-list')
+
     success_url = process_success_url
 
 

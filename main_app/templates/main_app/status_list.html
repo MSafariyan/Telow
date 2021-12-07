@@ -11,9 +11,18 @@
       </div>
     </div>
   </div>
+  {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{message.extra_tags}} alert-dismissible fade show mt-4" role="alert" dir="rtl">
+            {{message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
     <!-- Iterate over object_list -->
     <div class="d-flex justify-content-md-between">
-
         <table class="table text-center table-striped table-bordered" dir="rtl">
             <thead class="thead-dark"> 
             <tr>

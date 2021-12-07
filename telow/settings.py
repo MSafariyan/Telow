@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+
+from django.contrib.messages.constants import DEBUG
 from dotenv import load_dotenv
 
 
@@ -29,8 +31,8 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
-
+# DEBUG = os.getenv('DEBUG')
+DEBUG = False
 ALLOWED_HOSTS = ["*"]
 
 LOGIN_URL = "/admin/login/"

@@ -13,9 +13,10 @@ from django.views import View
 from ..models.status_model import status
 from main_app.forms.forms import StatusForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import ProtectedError
+from django.contrib import messages
 
 status_success_url = "/dashboard/status/"
-
 @method_decorator(login_required, name="dispatch")
 class StatusList(ListView):
     model = status
@@ -76,11 +77,6 @@ def StatusUpdate(request, pk):
                 return redirect("status-list")
     else:
         return redirect('index')            
-            
-
-        
-
-
 @method_decorator(login_required, name="dispatch")
 class StatusDelete(DeleteView):
     model = status
@@ -97,5 +93,20 @@ class StatusDelete(DeleteView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.title
         return context
+    
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.success_url = self.get_success_url()
+        try:
+            self.object.delete()
+        except ProtectedError as e:
+            messages.add_message(
+                    request,
+                    messages.ERROR,
+                    f"وضعیت مورد نظر با عملیاتی درگیر است و در حال استفاده است. لطفا ابتدا وضعیت عملیات را تغییر دهید سپس اقدام به حذف وضعیت کنید.",
+                    extra_tags="Danger",
+                )
+            return redirect('status-list')
+        
 
     success_url = status_success_url

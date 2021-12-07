@@ -14,6 +14,7 @@ from ..models.action_model import Action, auth_user_action
 from main_app.forms.forms import ActionForm
 from main_app.models.process_model import process_action
 from django.contrib import messages
+from django.db.models import ProtectedError
 
 # Create your views here.
 
@@ -84,8 +85,13 @@ def ActionUpdate(request, pk):
                     "assignE": users.values_list('user_id', flat=True)
                 }
                 form = ActionForm(initial=data)
-                message = "وظیفه به روزرسانی شد"
-                return render(request, "main_app/action_form_update.html", {"form":form,'message':message, "status":"success", "obj":action_instance})
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    f"{action_instance.name} به روزرسانی شد.",
+                    extra_tags="success",
+                )                
+                return redirect('action-list')
     else:
         return redirect('index')    
     
@@ -105,6 +111,26 @@ class ActionDelete(DeleteView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.title
         return context
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.success_url = self.get_success_url()
+        try:
+            self.object.delete()
+        except ProtectedError as e:
+            messages.add_message(
+                    request,
+                    messages.ERROR,
+                    f"وظیفه {self.object.name} دارای وظیفه وابسته است و یا روندی از این وظیفه استفاده می‌کند و امکان حذف آن وجود ندارد.",
+                    extra_tags="Danger",
+                )
+            messages.add_message(
+                    request,
+                    messages.WARNING,
+                    f'برای حذف وظیفه "{self.object.name}"  ابتدا وظیفه وابسته یا روندهای مرتبط با این وظیفه را را پاکسازی کنید',
+                    extra_tags="warning",
+                )
+            return redirect('action-list')
     
     template_name = "main_app/action_confirm_delete.html"
     success_url = action_success_url
