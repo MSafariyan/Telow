@@ -12,7 +12,7 @@ def CustomerList(request):
     if request.user.has_perm('main_app.view_customer'):
         customers = customer.objects.all()
 
-        return render(request, "main_app/customer_list.html", {"coustomer_list":customers})
+        return render(request, "main_app/customer_list.html", {"coustomer_list":customers, "title":"لیست کاربران"})
     else:
         messages.add_message(
             request,
@@ -27,7 +27,7 @@ def CustomerCreate(request):
     if request.user.has_perm('create_customer'):
         if request.method == "GET":
             form = CustomerForm()
-            return render(request, "main_app/customer_form.html", {"form":form})
+            return render(request, "main_app/customer_form.html", {"form":form, "title":"افزودن مشتری جدید"})
         if request.method == "POST":
             form = CustomerForm(request.POST)
             if form.is_valid():
@@ -59,7 +59,7 @@ def CustomerUpdate(request, pk):
                 "customer_phone":current_customer.customer_phone
             }
             form = CustomerForm(initial=data)
-            return render(request, "main_app/customer_form_update.html", {"form":form, "obj":current_customer})
+            return render(request, "main_app/customer_form_update.html", {"form":form, "obj":current_customer, "title":"به روزرسانی کاربر"})
         if request.method == "POST":
             form = CustomerForm(request.POST)
             if form.is_valid():

@@ -31,7 +31,7 @@ def OrderCreat(request):
     if request.user.has_perm("order.create_order"):
         if request.method == "GET":
             form = OrderForm()
-            return render(request, "order/order_form.html", {"form": form})
+            return render(request, "order/order_form.html", {"form": form, "title":'ساخت سفارش جدید'})
         if request.method == "POST":
             form = OrderForm(request.POST, request.FILES)
             if form.is_valid():
@@ -140,6 +140,7 @@ def OrderDetail(request, pk):
             "UserActions": actions2,
             "meta": meta,
             "finished": Status,
+            "title":"جزئیات سفارش"
         },
     )
 
@@ -158,7 +159,7 @@ def OrderListView(request):
         )
         order_meta_list.append({"order": order_metas, "order_meta": meta})
         print(order_meta_list)
-    return render(request, "order/order_list.html", {"orders": order_meta_list})
+    return render(request, "order/order_list.html", {"orders": order_meta_list, "title":"لیست سفارشات"})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -166,5 +167,11 @@ class OrderMetaUpdate(UpdateView):
     template_name = "order/order_meta_form.html"
     model = order_process_action
     fields = ["status"]
+    title = "بروزرسانی سفارش"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.title
+        return context
 
     success_url = "/dashboard/order"

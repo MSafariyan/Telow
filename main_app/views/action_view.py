@@ -35,7 +35,7 @@ def ActionList(request):
             print(action,users)
             data.append((action,users))
         print(data)
-        return render(request, "main_app/action_list.html", {"object_list":data})
+        return render(request, "main_app/action_list.html", {"object_list":data, "title":"لیست وظایف"})
     else:
         return redirect('index') 
 
@@ -53,7 +53,7 @@ def ActionUpdate(request, pk):
                 "assignE": users.values_list('user_id', flat=True)
             }
             form = ActionForm(initial=data)
-            return render(request, "main_app/action_form_update.html", {"form": form, "obj":action_instance})
+            return render(request, "main_app/action_form_update.html", {"form": form, "obj":action_instance, "title":"بروزرسانی وظایف"})
         
         if request.method == "POST":
             action_instance = Action.objects.get(pk=pk)
@@ -92,7 +92,7 @@ def ActionUpdate(request, pk):
 @method_decorator(login_required, name="dispatch")
 class ActionDelete(DeleteView):
     model = Action
-    
+    title = "حذف وظیفه"
     def dispatch(self, *args, **kwargs):
         if not (
             self.request.user.is_superuser or
@@ -100,6 +100,11 @@ class ActionDelete(DeleteView):
         ):
             return redirect('index')
         return super(ActionDelete, self).dispatch(*args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.title
+        return context
     
     template_name = "main_app/action_confirm_delete.html"
     success_url = action_success_url
@@ -110,7 +115,7 @@ def ActionCreate(request):
         from main_app.models.action_model import auth_user_action
         if request.method == "GET":
             form = ActionForm()
-            return render(request, "main_app/action_form.html", {"form": form})
+            return render(request, "main_app/action_form.html", {"form": form,"title":"ساخت وظیفه جدید"})
         if request.method == "POST":
             form = ActionForm(request.POST)
             if form.is_valid():

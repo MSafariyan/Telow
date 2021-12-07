@@ -22,6 +22,7 @@ process_success_url = "/dashboard/process/"
 @method_decorator(login_required, name="dispatch")
 class ProcessList(ListView):
     model = process
+    title = "لیست کاربران"
     def dispatch(self, *args, **kwargs):
         if not (
             self.request.user.is_superuser or
@@ -29,13 +30,18 @@ class ProcessList(ListView):
         ):
             return redirect('index')
         return super(ProcessList, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.title
+        return context
     
 @login_required()
 def ProcessDetail(request, pk):
     if request.user.has_perm('main_app.view_proccess'):
         current_process = process.objects.get(pk=pk)
         related_process_actions = process_action.objects.filter(process_id=current_process).all()
-        return render(request, "main_app/process_detail.html", {"process":current_process, "process_action":related_process_actions})
+        return render(request, "main_app/process_detail.html", {"process":current_process, "process_action":related_process_actions, "title":"جزئیات روند"})
     else:
         return redirect('index')
 
@@ -58,7 +64,7 @@ def ProcessUpdate(request, pk):
             return render(
                 request,
                 "main_app/process_form_update.html",
-                {"form": form, "obj": current_process},
+                {"form": form, "obj": current_process, "title":"به روزرسانی روند"},
             )
 
         if request.method == "POST":
@@ -132,6 +138,7 @@ def ProcessUpdate(request, pk):
 @method_decorator(login_required, name="dispatch")
 class ProcessDelete(DeleteView):
     model = process
+    title = "حذف روند"
     def dispatch(self, *args, **kwargs):
         if not (
             self.request.user.is_superuser or
@@ -139,6 +146,11 @@ class ProcessDelete(DeleteView):
         ):
             return redirect('index')
         return super(ProcessDelete, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.title
+        return context
     success_url = process_success_url
 
 
@@ -147,7 +159,7 @@ def ProcessCreate(request):
     if request.user.has_perm('main_app.create_process'):
         if request.method == "GET":
             form = ProcessActionForm
-            return render(request, "main_app/process_form.html", {"form": form})
+            return render(request, "main_app/process_form.html", {"form": form, "title":"ساخت روند جدید"})
         if request.method == "POST":
             form = ProcessActionForm(request.POST)
             if form.is_valid():

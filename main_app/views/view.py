@@ -17,7 +17,7 @@ def indexPanelView(request):
     action_perms = auth_user_action.objects.filter(user_id__pk=request.user.pk).values_list('action_id', flat=True)
     related_order_id_to_current_user = order_process_action.objects.filter(process_action__action__in=action_perms).values_list('order_id').all()
     orders = order.objects.filter(pk__in=related_order_id_to_current_user).order_by('priority').all()
-    return render(request, 'dashboard/dashboard.html', {"order_count":order_count, "process_count":process_count, "active_process":active_process,"orders":orders})
+    return render(request, 'dashboard/dashboard.html', {"order_count":order_count, "process_count":process_count, "active_process":active_process,"orders":orders, "title":"پنل کاربری"})
     
 
 def logout_view(request):
