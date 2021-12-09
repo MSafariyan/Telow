@@ -22,6 +22,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from order.models import order_meta
 from django.contrib import messages
+from order.models import order_meta
 
 order_success_url = "/dashboard/order/"
 
@@ -158,7 +159,6 @@ def OrderListView(request):
             .first()
         )
         order_meta_list.append({"order": order_metas, "order_meta": meta})
-        print(order_meta_list)
     return render(request, "order/order_list.html", {"orders": order_meta_list, "title":"لیست سفارشات"})
 
 
@@ -175,3 +175,23 @@ class OrderMetaUpdate(UpdateView):
         return context
 
     success_url = "/dashboard/order"
+
+from django.core import serializers
+from django.contrib.postgres.search import SearchVector
+import json
+from jalali_date import datetime2jalali, date2jalali
+
+@login_required
+def order_search(request):
+    if request.method == 'GET':
+        if request.GET.get('q') is not None and request.GET.get('q') != u"":
+            search_value = request.GET.get('q')
+            query = order.objects.annotate(search=SearchVector('order_title', 'customer_id__customer_name', 'customer_id__customer_family')).filter(search=search_value).all()
+            list_data = []
+            for data in query:
+                temp_list_data = {"order_id":data.pk, "order_title":data.order_title, "customer":data.customer_id.customer_name+" "+data.customer_id.customer_family, "priority":data.priority, "process":data.process_id.process_name, "created_at": datetime2jalali(data.created_at).strftime('%Y/%m/%d - %H:%M')}
+                list_data.append(temp_list_data)
+        else:
+            result = {"result": "None"}
+
+        return JsonResponse(list_data,safe=False)

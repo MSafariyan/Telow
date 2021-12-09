@@ -1,49 +1,112 @@
 {% extends "dashboard/base.html" %}
 {% load jalali_tags %}
 {% load tags %}
-{% block content%} 
+{% block content%}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="display-6">لیست سفارشات</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <div class="btn-group mr-2">
-        <a href='{% url "order-creat" %}' class="btn btn-lg btn-outline-success">سفارش جدید</a>
-        <a href='{% url "panel" %}' class="btn btn-lg btn-outline-primary">داشبورد</a>
-      </div>
+    <div>
+        <div class="form-group">
+            <input type="text" class="form-control text-right" id="searchinput" placeholder="جستجو">
+        </div>
     </div>
-  </div>
-    <!-- Iterate over object_list -->
-    {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{message.extra_tags}} alert-dismissible fade show mt-4" role="alert" dir="rtl">
-                    {{message}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
-    {% endif %}
-    <div class="d-flex justify-content-md-between">
-        <table class="table text-center table-striped table-bordered" dir="rtl">
-            <thead class="thead-dark"> 
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <a href='{% url "order-creat" %}' class="btn btn-lg btn-outline-success">سفارش جدید</a>
+            <a href='{% url "panel" %}' class="btn btn-lg btn-outline-primary">داشبورد</a>
+        </div>
+    </div>
+</div>
+<!-- Iterate over object_list -->
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{message.extra_tags}} alert-dismissible fade show mt-4" role="alert" dir="rtl">
+    {{message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
+{% endif %}
+<div class="d-flex justify-content-md-between">
+    <table class="table text-center table-striped table-bordered" dir="rtl">
+        <thead class="thead-dark">
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">نام سفارش</th>
+                <th scope="col">نام مشتری</th>
+
                 <th scope="col">امکانات</th>
                 <th scope="col">تاریخ ثبت سفارش</th>
             </tr>
-            </thead>
-            <tbody class="table-striped">
-        {% for data in orders %}
+        </thead>
+        <tbody id="tableData" class="table-striped">
+            {% for data in orders %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
                 <td>{{ data.order.order_title }}</td>
+                <td>{{ data.order.customer_id}}</td>
                 <td>
                     <a href='{% url "order-detail" data.order.pk %}' class="btn btn-secondary">جزئیات</a>
                 </td>
                 <td>{{ data.order.created_at|to_jalali:'%Y/%m/%d - %H:%M' }}</td>
             </tr>
-        {% endfor %}
-    </tbody>
+            {% endfor %}
+        </tbody>
     </table>
+</div>
+<div class="d-flex justify-content-center">
+    <div class="spinner-border spinner-border-lg" style="width: 4rem; height: 4rem;" role="status" id="spinner">
+      <span class="sr-only">Loading...</span>
     </div>
-{% endblock %} 
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(document).ready(function () {
+    var serchinput = $("#searchinput")
+    var original = $("#tableData").html()
+    var spinner = $("#spinner")
+    spinner.hide()
+    serchinput.on("input",function (e) {
+        if (serchinput.val().length >= 3) 
+        {
+            spinner.show()
+            $.ajax({
+                method: 'GET',
+                url: '{% url "order-search" %}',
+                data: { q: serchinput.val() },
+                success: function(res){
+                    data = ""
+                    if(res != "")
+                    {
+                        spinner.hide()
+                        $.each(res, function(i, value){
+                        data+= '<tr>\
+                                <th scope="row">'+(i+1)+'</th>\
+                                <td>'+value["order_title"]+'</td>\
+                                <td>'+value["customer"]+'</td>\
+                                <td>\
+                                    <a href=/dashboard/order/'+value['order_id']+' class="btn btn-secondary">جزئیات</a>\
+                                </td>\
+                                <td>'+value["created_at"]+'</td>\
+                            </tr>'
+                            data += '<h1>'+value['order_title']+'</h1>'
+                        })
+                        $("#tableData").html(data)
+                    }else
+                    {
+                        spinner.hide()
+                        $("#tableData").html("اطلاعاتی یافت نشد")
+                    }
+                }  
+            })
+        }
+        else if (serchinput.val().length<3){
+            $("#tableData").html(original)
+        }
+    });
+});
+
+
+</script>
+{% endblock %}

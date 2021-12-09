@@ -39,7 +39,7 @@ class order_meta(models.Model):
     
     """
         because this app is just a local private service for our company,
-        we need have some custome permission to show each section of order form
+        we need some custome permission to show each section of order form
         to related department
     """
     class Meta:
