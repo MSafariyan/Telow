@@ -189,7 +189,7 @@ def order_search(request):
             query = order.objects.annotate(search=SearchVector('order_title', 'customer_id__customer_name', 'customer_id__customer_family')).filter(search=search_value).all()
             list_data = []
             for data in query:
-                temp_list_data = {"order_id":data.pk, "order_title":data.order_title, "customer":data.customer_id.customer_name+" "+data.customer_id.customer_family, "priority":data.priority, "process":data.process_id.process_name, "created_at": datetime2jalali(data.created_at).strftime('%Y/%m/%d - %H:%M')}
+                temp_list_data = {"order_id":data.pk, "order_title":data.order_title, "customer":data.customer_id.customer_name+" "+data.customer_id.customer_family, "priority":data.priority, "process":data.process_id.process_name, "created_at": datetime2jalali(data.created_at).strftime(' - %Y/%m/%d - %H:%M')}
                 list_data.append(temp_list_data)
         else:
             result = {"result": "None"}

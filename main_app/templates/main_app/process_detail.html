@@ -51,7 +51,7 @@
                     <tr>
                         <th scope="col">ردیف</th>
                         <th scope="col">وظیفه جاری</th>
-                        <th scope="col">وضعیت وظیفه جاری</th>
+                        <th scope="col">توضیحات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,10 +67,8 @@
                     <tr style="border-right: 3px solid blue;" class="rounded">
                         <th scope="row">{{ forloop.counter }}</th>
                         <td>{{action.process_action}}</td>
-                        <td><span class="border " style="background-color: '#{{action.status.color}}';">{{action.status}}</span>
-                        </td>
-                        <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a>
-                        </td>
+                        <td><span class="border " style="background-color: '#{{action.status.color}}';">{{action.status}}</span></td>
+                        <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
                     </tr>
                     {% endif %}
                 </tbody>
