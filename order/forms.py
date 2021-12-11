@@ -4,7 +4,15 @@ from main_app.models.process_model import process
 from jalali_date.fields import JalaliDateField, SplitJalaliDateTimeField
 from jalali_date.widgets import AdminJalaliDateWidget, AdminSplitJalaliDateTime
 from main_app.models.customer_model import customer
+from main_app.models.status_model import status
 
+
+class OrderMetaForm(forms.Form):
+    status = forms.ModelChoiceField(required=True,
+        queryset=status.objects.all(),
+        label="تعیین وضعیت",
+        widget=forms.Select(attrs={"class": "js-example-basic-single form-control"}),
+    )
 
 class OrderForm(forms.Form):
     #  Just a fatty form to take orders.

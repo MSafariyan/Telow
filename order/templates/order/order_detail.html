@@ -710,13 +710,23 @@
                     {% with previous_element=actions|previous:forloop.counter0 %}
                         {% if previous_element.status == finished or forloop.first %}
                             {% if action in UserActions%}
-                            <tr style="border-right: 3px solid blue;" class="rounded">
-                                <th scope="row">{{forloop.counter}}</th>
-                                <td>{{action.process_action}}</td>
-                                <td><span class="border p-2 rounded"
-                                        style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
-                                <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
-                            </tr>
+                                {% if action.status == finished%}
+                                <tr style="border-right: 3px solid blue;" class="rounded">
+                                    <th scope="row">{{forloop.counter}}</th>
+                                    <td>{{action.process_action}}</td>
+                                    <td><span class="border p-2 rounded"
+                                            style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                                    <td>امکان تغییر وضعیت وجود ندارد.</td>
+                                </tr>
+                                {% else %}
+                                <tr style="border-right: 3px solid blue;" class="rounded">
+                                    <th scope="row">{{forloop.counter}}</th>
+                                    <td>{{action.process_action}}</td>
+                                    <td><span class="border p-2 rounded"
+                                            style="background-color: #{{action.status.color}};">{{action.status}}</span></td>
+                                    <td><a href="{% url 'order-meta-status' action.pk %}" class="btn btn-primary">تغییر وضعیت</a></td>
+                                </tr>
+                                {% endif %}
                             {% endif %}
                             {% else %}
                             {% if action in UserActions%}
@@ -734,10 +744,4 @@
             </tbody>
         </table>
     </div>
-
-
-    {% endblock %}
-
-    {% block js%}
-
-    {% endblock %}
+{% endblock %}

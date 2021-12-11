@@ -1,31 +1,27 @@
+from django.db.models import fields
 from django.shortcuts import render, redirect
 from main_app.models.action_model import Action, auth_user_action
-from main_app.models.process_model import process
+from main_app.models.process_model import *
+from order.models import order_meta 
 from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
-from main_app.models.process_model import *
 from django.contrib.auth.models import User
 from order.models import order, order_process_action
 import json
 from django.core import serializers
 from django.shortcuts import redirect
-from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from main_app.forms.forms import OrderMetaForm
 from order.forms import OrderForm
-from django.http import JsonResponse
-import json
-from django.core import serializers
-from order.models import order_meta
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from order.models import order_meta
 from django.contrib import messages
-from order.models import order_meta
+from django.contrib.postgres.search import SearchVector
+from jalali_date import datetime2jalali, date2jalali
+
 
 order_success_url = "/dashboard/order/"
-
 
 @login_required()
 def OrderCreat(request):
@@ -43,9 +39,7 @@ def OrderCreat(request):
                 for file in files.items():
                     fs = FileSystemStorage()
                     filename = fs.save(file[1].name, file[1])
-                    print(filename)
                     uploaded_file_url = fs.url(filename)
-                    print(uploaded_file_url)
                     data[file[0]] = {
                         "name": file[1].name,
                         "location": uploaded_file_url,
@@ -86,13 +80,20 @@ def OrderCreat(request):
                 # try to create order actions
                 try:
                     actions = process_action.objects.filter(process_id=flow_data)
-                    status_action = status.objects.get(status_title="در دست بررسی")
-                    for action in actions:
-                        new_order_meta = order_process_action(
-                            order_id=new_order,
-                            process_action=action,
-                            status=status_action,
-                        )
+                    status_action = status.objects.get(status_title="در صف")
+                    for index, action in enumerate(actions):
+                        if index == 0:
+                            new_order_meta = order_process_action(
+                                order_id=new_order,
+                                process_action=action,
+                                status=status.objects.get(status_title="در دست بررسی"),
+                            )
+                        else:
+                            new_order_meta = order_process_action(
+                                order_id=new_order,
+                                process_action=action,
+                                status=status_action,
+                            )
                         new_order_meta.save()
                 except Exception as e:
                     return JsonResponse({"Result": "BAD", "error": f"{e}"})
@@ -127,7 +128,7 @@ def OrderDetail(request, pk):
         .filter(order_id=order_id)
         .all()
     )
-    actions = order_process_action.objects.filter(order_id=current_order).order_by("id").all()
+    actions = order_process_action.objects.filter(order_id=current_order).order_by("process_action__action__dependency__pk").all()
     meta = order_meta.objects.filter(order_id=order_id).only("meta_value").get()
     users = json.loads(meta.meta_value["assignE"])
     meta.meta_value["assignE"] = users
@@ -166,20 +167,52 @@ def OrderListView(request):
 class OrderMetaUpdate(UpdateView):
     template_name = "order/order_meta_form.html"
     model = order_process_action
-    fields = ["status"]
+    fields = ['status']
     title = "بروزرسانی سفارش"
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.title
+        context['meta_form'] = OrderMetaForm
+        context['obj'] = self.get_object()
         return context
 
-    success_url = "/dashboard/order"
+    def post(self, request, *args, **kwargs):
+        try:
+            # get current obj from request
+            obj_status_change = status.objects.filter(pk=int(request.POST.get('status'))).get()
+            # update current obj status code
+            current_obj = self.get_object()
+            current_obj.status = obj_status_change
+            current_obj.save()
+            if obj_status_change.status_title == "پایان یافته":
+                on_queue = status.objects.filter(status_title='در دست بررسی').first()
+                try:
+                    next_obj = order_process_action.objects.get(pk=self.get_object().pk+1)
+                    next_obj.status = on_queue
+                    next_obj.save()
+                except Exception as e:
+                    pass
 
-from django.core import serializers
-from django.contrib.postgres.search import SearchVector
-import json
-from jalali_date import datetime2jalali, date2jalali
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                "وعضعیت با موففیت تغییر یافت.",
+                extra_tags="success",
+            )
+            return redirect('order-list')
+        except Exception as e:
+            messages.add_message(
+                request,
+                messages.WARNING,
+                "عملیات موفیت آمیز نبود لطفا با ادمین تماس بگیرید.",
+                extra_tags="danger",
+            )
+            return redirect('order-list')
+        
+
+    success_url = "/dashboard/order"
 
 @login_required
 def order_search(request):
