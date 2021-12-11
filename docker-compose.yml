@@ -10,7 +10,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: "trust"
   app:
     build: .
-    command: sh -c "python manage.py migrate && python manage.py loaddata fixture/status.json && python manage.py runserver 0.0.0.0:8000 --insecure"
+    command: sh -c "python manage.py migrate && python manage.py loaddata fixture/status.json && python manage.py loaddata fixture/action.json  &&  python manage.py runserver 0.0.0.0:8000 --insecure"
     volumes:
       - .:/code/
     ports:

@@ -1,0 +1,13 @@
+[
+    {
+        "model": "main_app.action",
+        "pk": 1,
+        "fields": {
+            "name": "ندارد",
+            "description": "ندارد",
+            "dependency": null,
+            "created_at": "2021-12-11T00:00:00.334Z",
+            "updated_at": "2021-12-11T00:00:00.334Z"
+        }
+    }
+]
