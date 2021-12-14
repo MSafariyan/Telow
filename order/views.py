@@ -19,6 +19,7 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 from django.contrib.postgres.search import SearchVector
 from jalali_date import datetime2jalali, date2jalali
+from django.core.paginator import Paginator
 
 
 order_success_url = "/dashboard/order/"
@@ -128,7 +129,7 @@ def OrderDetail(request, pk):
         .filter(order_id=order_id)
         .all()
     )
-    actions = order_process_action.objects.filter(order_id=current_order).order_by("process_action__action__dependency__pk").all()
+    actions = order_process_action.objects.filter(order_id=current_order).order_by("process_action__priority").all()
     meta = order_meta.objects.filter(order_id=order_id).only("meta_value").get()
     users = json.loads(meta.meta_value["assignE"])
     meta.meta_value["assignE"] = users
@@ -160,7 +161,12 @@ def OrderListView(request):
             .first()
         )
         order_meta_list.append({"order": order_metas, "order_meta": meta})
-    return render(request, "order/order_list.html", {"orders": order_meta_list, "title":"لیست سفارشات"})
+    
+    paginator = Paginator(order_meta_list, 6) # Show 10 contacts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "order/order_list.html", {"orders": page_obj, "title":"لیست سفارشات"})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -187,13 +193,15 @@ class OrderMetaUpdate(UpdateView):
             current_obj.status = obj_status_change
             current_obj.save()
             if obj_status_change.status_title == "پایان یافته":
-                on_queue = status.objects.filter(status_title='در دست بررسی').first()
+                on_queue = status.objects.get(status_title='در دست بررسی')
                 try:
-                    next_obj = order_process_action.objects.get(pk=self.get_object().pk+1)
+                    next_obj = order_process_action.objects.filter(process_action__priority=current_obj.process_action.priority+1).filter(order_id=current_obj.order_id).first()
                     next_obj.status = on_queue
                     next_obj.save()
                 except Exception as e:
                     pass
+            else:
+                return HttpResponse("NOOO")
 
             messages.add_message(
                 request,

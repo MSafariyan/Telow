@@ -15,6 +15,7 @@ class process(models.Model):
 class process_action(models.Model):
     action   = models.ForeignKey(Action, on_delete=models.PROTECT)
     process_id   = models.ForeignKey(process, on_delete=models.PROTECT, null=False, default="تعیین نشده")
+    priority = models.PositiveIntegerField(null=True)
     created_at = models.DateTimeField(null=True, blank=True, auto_now_add=True)
     updated_at = models.DateTimeField(null=True, blank=True, auto_now=True)
 

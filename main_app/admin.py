@@ -11,8 +11,8 @@ from main_app.models.customer_model import customer
 # class ordermetaAdmin(admin.ModelAdmin):
 #     list_display = ['pk','order_id', 'process_action', 'status', 'updated_at']
 
-# class process_actionAdmin(admin.ModelAdmin):
-#     list_display = ['pk', 'process_id', 'action', 'updated_at']
+class process_actionAdmin(admin.ModelAdmin):
+    list_display = ['pk','priority' ,'process_id', 'action', 'updated_at',]
   
 class authUserActionAdmin(admin.ModelAdmin):
       list_display = ['pk', 'user_id', 'action_id']  
@@ -29,7 +29,7 @@ admin.site.register(status)
 admin.site.register(order)
 admin.site.register(order_process_action, orderProcessActionAdmin)
 admin.site.register(process)
-admin.site.register(process_action)
+admin.site.register(process_action, process_actionAdmin)
 admin.site.register(department)
 admin.site.register(order_meta, orderMetaAdmin)
 admin.site.register(customer)

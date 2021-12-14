@@ -464,7 +464,7 @@
                                 <div class="col-md-4 offset-md-4 mt-4">
                                     <label for="{{form.flat_cover_detail.id_for_label}}">محل خالی کردن:
                                     </label>
-                                    <div class="text-center border p-2 rounded">
+                                    <div class="text-center border p-2 rounded" dir="rtl">
                                         {% for radio in form.flat_cover_detail %}
                                         <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
                                         {% endfor %}
@@ -492,7 +492,7 @@
                                 <div class="col-md-12">
                                     <label for="{{form.plastic_covers.id_for_label}}">گزینه های سلفون
                                     </label>
-                                    <div class="text-center border p-2 rounded">
+                                    <div class="text-center border p-2 rounded" dir="rtl">
                                         {% for radio in form.plastic_covers %}
                                         <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
                                         {% endfor %}
@@ -512,7 +512,7 @@
                                 <div class="col-md-6">
                                     <label for="{{form.part_cover.id_for_label}}">پوشش موضعی
                                     </label>
-                                    <div class="text-center border p-2 rounded">
+                                    <div class="text-center border p-2 rounded" dir="rtl">
                                         {% for radio in form.part_cover %}
                                         <span class="p-2 ">{{ radio.choice_label }} {{ radio.tag }}</span>
                                         {% endfor %}
@@ -538,7 +538,7 @@
                                 <div class="col-md-6 mt-1">
                                     <label for="{{form.hotstamp_sample.id_for_label}}">نمونه هات استمپ:
                                     </label>
-                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                    <div class="text-center border p-2 rounded" dir="rtl">
                                         {% for radio in form.hotstamp_sample %}
                                         <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
                                         {% endfor %}
@@ -560,7 +560,7 @@
                                 <div class="col-md-3">
                                     <label for="{{form.cliche_type.id_for_label}}">نوع کلیشه:
                                     </label>
-                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                    <div class="text-center border p-2 rounded" dir="rtl">
                                         {% for radio in form.cliche_type %}
                                         <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
                                         {% endfor %}
@@ -569,7 +569,7 @@
                                 <div class="col">
                                     <label for="{{form.cliche_provider.id_for_label}}">کلیشه
                                     </label>
-                                    <div class="text-right border p-2 rounded" dir="">
+                                    <div class="text-right border p-2 rounded" dir="rtl">
                                         {% for radio in form.cliche_provider %}
                                         <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
                                         {% endfor %}
@@ -592,7 +592,7 @@
                                 <div class="col-md-12 mt-1">
                                     <label for="{{form.sheild.id_for_label}}">پوشال گیری:
                                     </label>
-                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                    <div class="text-center border p-2 rounded" dir="rtl">
                                         {% for radio in form.sheild %}
                                         <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
                                         {% endfor %}
@@ -607,7 +607,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="{{form.window_sticking.id_for_label}}">پنجره چسبانی</label>
-                                    <div class="text-center border p-2 rounded" dir="ltr">
+                                    <div class="text-center border p-2 rounded" dir="rtl">
                                         {% for radio in form.window_sticking %}
                                         <span class="p-3">{{ radio.tag }}{{ radio.choice_label }}</span>
                                         {% endfor %}
@@ -641,7 +641,7 @@
                                 <div class="col-md-12">
                                     <label for="{{form.box_sticking.id_for_label}}">جعبه چسبانی
                                     </label>
-                                    <div class="text-right border p-2rounded" dir="">
+                                    <div class="text-right border p-2rounded" dir="rtl">
                                         {% for radio in form.box_sticking %}
                                         <span class="m-2">{{ radio.tag }}{{ radio.choice_label }}</span>
                                         {% endfor %}
