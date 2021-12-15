@@ -20,6 +20,7 @@ from django.contrib import messages
 from django.contrib.postgres.search import SearchVector
 from jalali_date import datetime2jalali, date2jalali
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 order_success_url = "/dashboard/order/"
@@ -224,10 +225,10 @@ class OrderMetaUpdate(UpdateView):
 
 @login_required
 def order_search(request):
-    if request.method == 'GET':
+    if request.method == "GET":
         if request.GET.get('q') is not None and request.GET.get('q') != u"":
             search_value = request.GET.get('q')
-            query = order.objects.annotate(search=SearchVector('order_title', 'customer_id__customer_name', 'customer_id__customer_family')).filter(search=search_value).all()
+            query = order.objects.filter(Q(order_title__contains=search_value) | Q(customer_id__customer_name__contains=search_value) | Q(customer_id__customer_family__contains=search_value))
             list_data = []
             for data in query:
                 temp_list_data = {"order_id":data.pk, "order_title":data.order_title, "customer":data.customer_id.customer_name+" "+data.customer_id.customer_family, "priority":data.priority, "process":data.process_id.process_name, "created_at": datetime2jalali(data.created_at).strftime(' - %Y/%m/%d - %H:%M')}

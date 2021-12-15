@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.getenv('DEBUG')
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 LOGIN_URL = "/admin/login/"
@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main_app',
     'order',
-    'jalali_date'
+    'jalali_date',
+    "django.contrib.postgres",
     ]
 
 MIDDLEWARE = [
@@ -87,7 +88,7 @@ WSGI_APPLICATION = 'telow.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':   os.getenv('POSTGRES_ENGIN'),
+        'ENGINE':   "django.db.backends.postgresql",
         'NAME':     os.getenv('POSTGRES_NAME'),
         'USER':     os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
