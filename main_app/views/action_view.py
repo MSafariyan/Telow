@@ -114,9 +114,16 @@ class ActionDelete(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        self.success_url = self.get_success_url()
+        self.success_url = action_success_url
         try:
             self.object.delete()
+            messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    f"وظیفه {self.object.name} با موفقیت حذف شد.",
+                    extra_tags="success",
+                )
+            return redirect('action-list')
         except ProtectedError as e:
             messages.add_message(
                     request,
